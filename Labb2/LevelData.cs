@@ -22,10 +22,40 @@ class LevelData
     //och en enkel foreach-loop som anropar .Draw() för varje element i listan bör nu rita upp hela banan på skärmen.
     public void Load(string fileName)
     {
+        try
+        {
+            StreamReader sr = new StreamReader(fileName);
+
+            //Read the first line of text
+            fileName = sr.ReadLine();
+            //Continue to read until you reach end of file
+            while (fileName != null)
+            {
+                //write the line to console window
+                Console.WriteLine(fileName);
+                //Read the next line
+                fileName = sr.ReadLine();
+            }
+            //close the file
+            sr.Close();
+            Console.ReadLine();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Exception: " + e.Message);
+        }
+        finally
+        {
+            Console.WriteLine("Executing finally block.");
+        }
+
+
         foreach (var element in Elements)
         {
             // För varje tecken #,r eller s skapa en ny instans av motsvarande klass och lägg till på elements-listan
         }
+
+        
     }
 
 }

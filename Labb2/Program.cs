@@ -5,16 +5,21 @@
 using System.IO;
 
 Dice dice1 = new Dice();
+LevelData levelData = new LevelData();
 
 Console.WriteLine("Du attackerar med:");
 Console.WriteLine(dice1.ThrowDice(1, 6, 2)); // Test för att slå en tärning
 
-String line;
+string filePath = @"Levels\\Level1.txt";
+levelData.Load(filePath);
 
+
+/*String line;
 try
 {
     //Pass the file path and file name to the StreamReader constructor
     var path = Path.Combine(Directory.GetCurrentDirectory(), "Levels\\Level1.txt");
+
     StreamReader sr = new StreamReader(path);
 
     //Read the first line of text
@@ -39,3 +44,4 @@ finally
 {
     Console.WriteLine("Executing finally block.");
 }
+*/
