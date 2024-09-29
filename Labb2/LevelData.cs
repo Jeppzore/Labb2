@@ -20,7 +20,7 @@ class LevelData
 
     //När filen är inläst bör det alltså finnas ett objekt i “elements” för varje tecken i filen (exkluderat space/radbyte),
     //och en enkel foreach-loop som anropar .Draw() för varje element i listan bör nu rita upp hela banan på skärmen.
-    public void Load(string fileName)
+    public static void Load(string fileName)
     {
         try
         {
@@ -31,6 +31,32 @@ class LevelData
             //Continue to read until you reach end of file
             while (fileName != null)
             {
+
+                if (fileName.Contains('@'))
+                {
+                    bool playerFound = true;
+                    Player player = new Player();
+                    player.Draw();
+                }
+
+                if (fileName.Contains('r'))
+                {
+                    bool ratFound = true;
+
+                    Rat rat = new Rat();
+                    rat.Draw();
+
+                }
+
+                if (fileName.Contains('s'))
+                {
+                    bool snakeFound = true;
+                    Snake snake = new Snake();
+                    snake.Draw();
+
+                }
+
+
                 //write the line to console window
                 Console.WriteLine(fileName);
                 //Read the next line
@@ -50,13 +76,11 @@ class LevelData
         }
 
 
-        foreach (var element in Elements)
-        {
+        //foreach (var element in Elements)
+        //{
             // För varje tecken #,r eller s skapa en ny instans av motsvarande klass och lägg till på elements-listan
         }
 
         
     }
-
-}
 

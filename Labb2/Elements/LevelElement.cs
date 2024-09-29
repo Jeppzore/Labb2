@@ -21,7 +21,10 @@ abstract class LevelElement
 
     public void Draw() // Metod för att rita ut 
     {
+        if (ratFound == true)
+        {
 
+        }
     }
     
 }
