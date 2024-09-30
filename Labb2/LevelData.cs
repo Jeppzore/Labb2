@@ -20,47 +20,49 @@ class LevelData
 
     //När filen är inläst bör det alltså finnas ett objekt i “elements” för varje tecken i filen (exkluderat space/radbyte),
     //och en enkel foreach-loop som anropar .Draw() för varje element i listan bör nu rita upp hela banan på skärmen.
-    public static void Load(string fileName)
+    public void Load(string fileName)
     {
         try
         {
             StreamReader sr = new StreamReader(fileName);
 
             //Read the first line of text
-            fileName = sr.ReadLine();
+            string line = sr.ReadLine();
             //Continue to read until you reach end of file
-            while (fileName != null)
+            while (line != null)
             {
+                //För varje gång line stöter på ett tecken nedan skall objektets x,y position sparas och läggas till i elements
+                //Elements i program.cs skriver sedan ut kartan baserat på samtligas position
+                //Console.SetcursorPosition(int, int) sätter positionen
+                //forloop i som håller reda på y-position
+                //forloop j som håller reda på x-position
 
-                if (fileName.Contains('@'))
+
+                //int playerPosition = line.IndexOf('@');
+                //Console.WriteLine(playerPosition);
+                //Player player = new Player(x, y);
+
+                if (line.)
+                
+
+                if (line.Contains('r'))
                 {
-                    bool playerFound = true;
-                    Player player = new Player();
-                    player.Draw();
-                }
-
-                if (fileName.Contains('r'))
-                {
-                    bool ratFound = true;
-
-                    Rat rat = new Rat();
-                    rat.Draw();
-
-                }
-
-                if (fileName.Contains('s'))
-                {
-                    bool snakeFound = true;
-                    Snake snake = new Snake();
-                    snake.Draw();
+                    //Rat rat = new Rat(x, y);
+                    //elements.Add(rat);
 
                 }
 
+                if (line.Contains('s'))
+                {
+                    //Snake snake = new Snake(x, y);
+
+                }
 
                 //write the line to console window
-                Console.WriteLine(fileName);
+                
                 //Read the next line
-                fileName = sr.ReadLine();
+                line = sr.ReadLine();
+               
             }
             //close the file
             sr.Close();
