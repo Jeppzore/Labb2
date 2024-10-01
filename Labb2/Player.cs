@@ -13,10 +13,23 @@
 
 //Avståndet mellan två punkter i 2D kan enkelt beräknas
 //med hjälp av pythagoras sats.
+
+using Elasticsearch.Net;
+using System.Xml.Linq;
+
 class Player : LevelElement
 {
 
-    int health = 100;
+    public int Health { get; set; }
+    public string Name { get; set; }
+
+
+    public Player(int x, int y) : base(x, y, '@', ConsoleColor.Yellow)
+    {
+        Health = 10;
+        Name = "Player";
+    }
+
     // attack = 2d6+2
     // defence = 2d6+0
 

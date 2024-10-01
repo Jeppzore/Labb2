@@ -5,15 +5,16 @@
 class Snake : Enemy
 {
 
-    int health = 25;
-    // attack = 3d4+2
-    // defence = 1d8+5
+    public Snake(int x, int y) : base(x, y, 's', ConsoleColor.Green)
+    {
+        Health = 20;
+        Name = "Snake";
+    }
+
+
 
     public override void Update()
     {
         
     }
-
-
-
 }

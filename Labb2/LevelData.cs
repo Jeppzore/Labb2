@@ -6,9 +6,9 @@
 class LevelData
 {
 
-    private List<LevelElement> elements = new List<LevelElement>(); // Private field elements av typen List<LevelElement>
+    private List<LevelElement> _elements = new List<LevelElement>(); // Private field elements av typen List<LevelElement>
 
-    public List<LevelElement> Elements { get { return elements; } } //public readonly property “Elements”.
+    public List<LevelElement> Elements { get { return _elements; } } //public readonly property “Elements”.
 
 
     //läser in data från filen man anger vid anrop.
@@ -22,67 +22,61 @@ class LevelData
     //och en enkel foreach-loop som anropar .Draw() för varje element i listan bör nu rita upp hela banan på skärmen.
     public void Load(string fileName)
     {
-        try
-        {
-            StreamReader sr = new StreamReader(fileName);
+        _elements = new List<LevelElement>();
 
-            //Read the first line of text
-            string line = sr.ReadLine();
-            //Continue to read until you reach end of file
-            while (line != null)
+        StreamReader sr = new StreamReader(fileName);
+
+        //Read the first line of text
+        string line = sr.ReadLine();
+
+        int y = 0; // Spårar radnummer (Y-koordinaten)
+
+        // Läs filen rad för rad
+        while (line != null)
+        {
+
+            for (int x = 0; x < line.Length; x++)
             {
-                //För varje gång line stöter på ett tecken nedan skall objektets x,y position sparas och läggas till i elements
-                //Elements i program.cs skriver sedan ut kartan baserat på samtligas position
-                //Console.SetcursorPosition(int, int) sätter positionen
-                //forloop i som håller reda på y-position
-                //forloop j som håller reda på x-position
-
-
-                //int playerPosition = line.IndexOf('@');
-                //Console.WriteLine(playerPosition);
-                //Player player = new Player(x, y);
-
-                if (line.)
-                
-
-                if (line.Contains('r'))
+                if (line[x] == '#') // Kontrollera om tecknet är '#' (Wall)
                 {
-                    //Rat rat = new Rat(x, y);
-                    //elements.Add(rat);
-
+                    // Skapa ett nytt LevelElement med objektets motsvarade x och y värde
+                    _elements.Add(new Wall(x, y));
                 }
 
-                if (line.Contains('s'))
+                if (line[x] == 'r') // Kontrollera om tecknet är 'r' (Rat)
                 {
-                    //Snake snake = new Snake(x, y);
-
+                    // Skapa ett nytt LevelElement med objektets motsvarade x och y värde
+                    _elements.Add(new Rat(x, y));
                 }
 
-                //write the line to console window
-                
-                //Read the next line
-                line = sr.ReadLine();
-               
+                if (line[x] == 's') // Kontrollera om tecknet är 's' (Snake)
+                {
+                    // Skapa ett nytt LevelElement med objektets motsvarade x och y värde
+                    _elements.Add(new Snake(x, y));
+                }
+
+                if (line[x] == '@') // Kontrollera om tecknet är '@' (Player)
+                {
+                    // Skapa ett nytt LevelElement med objektets motsvarade x och y värde
+                    _elements.Add(new Player(x, y));
+                }
             }
-            //close the file
-            sr.Close();
-            Console.ReadLine();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine("Exception: " + e.Message);
-        }
-        finally
-        {
-            Console.WriteLine("Executing finally block.");
+
+            y++;
+
+            //Läs nästa rad
+            line = sr.ReadLine();
+
+            //För varje gång line stöter på ett tecken nedan skall objektets x,y position sparas och läggas till i elements
+            //Elements i program.cs skriver sedan ut kartan baserat på samtligas position
+            //Console.SetcursorPosition(int, int) sätter positionen
+            //forloop i som håller reda på y-position
+            //forloop j som håller reda på x-position    
+
         }
 
-
-        //foreach (var element in Elements)
-        //{
-            // För varje tecken #,r eller s skapa en ny instans av motsvarande klass och lägg till på elements-listan
-        }
-
-        
     }
+}        
+        
+    
 
