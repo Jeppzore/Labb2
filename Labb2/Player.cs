@@ -1,5 +1,4 @@
-﻿
-//Varken spelare, rats eller snakes kan gå igenom väggar eller varandra.
+﻿//Varken spelare, rats eller snakes kan gå igenom väggar eller varandra.
 
 
 // Ärver av LevelElement för att kunna hålla reda på om spelaren
@@ -14,21 +13,23 @@
 //Avståndet mellan två punkter i 2D kan enkelt beräknas
 //med hjälp av pythagoras sats.
 
-using Elasticsearch.Net;
-using System.Xml.Linq;
-
 class Player : LevelElement
 {
 
     public int Health { get; set; }
+    public int Level { get; set; }
     public string Name { get; set; }
+
 
 
     public Player(int x, int y) : base(x, y, '@', ConsoleColor.Yellow)
     {
         Health = 10;
         Name = "Player";
+        Level = 1;
     }
+
+    
 
     // attack = 2d6+2
     // defence = 2d6+0
