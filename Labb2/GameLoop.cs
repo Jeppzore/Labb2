@@ -19,4 +19,22 @@
 class GameLoop
 {
 
+    public static void Start()
+    {
+        LevelData level = new LevelData();    
+
+        string filePath = @"Levels\\Level1.txt";
+        level.Load(filePath);
+        Console.CursorVisible = false;
+
+        foreach (LevelElement element in level.Elements)
+        {
+           element.Draw();
+           Player.MovePlayer();
+        }
+
+        
+
+    }
+
 }

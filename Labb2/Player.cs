@@ -13,6 +13,8 @@
 //Avståndet mellan två punkter i 2D kan enkelt beräknas
 //med hjälp av pythagoras sats.
 
+using System.Runtime.CompilerServices;
+
 class Player : LevelElement
 {
 
@@ -29,7 +31,33 @@ class Player : LevelElement
         Level = 1;
     }
 
-    
+    public static void MovePlayer()
+    {
+        Player player = new Player(5, 5);
+
+        var key = Console.ReadKey(true).Key;
+
+        switch (key)
+        {
+            case ConsoleKey.W: // Upp
+                if (player.Y > 0) player.Y--;
+                break;
+
+            case ConsoleKey.S: // Ner
+                if (player.Y < 0 - 1) player.Y++;
+                break;
+
+            case ConsoleKey.A: // Vänster
+                if (player.X > 0) player.X--;
+                break;
+
+            case ConsoleKey.D: // HÖger
+                if (player.X < 0 - 1) player.X++;
+                break;
+        }
+    }
+
+
 
     // attack = 2d6+2
     // defence = 2d6+0
