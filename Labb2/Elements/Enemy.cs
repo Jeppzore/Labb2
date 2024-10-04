@@ -10,7 +10,7 @@
 
 abstract class Enemy : LevelElement
 {
-    protected Enemy(int x, int y, char icon, ConsoleColor consoleColor) : base(x, y, icon, consoleColor)
+    protected Enemy(Position position, char icon, ConsoleColor consoleColor, elementType type) : base(position, icon, consoleColor, type)
     {
 
     }

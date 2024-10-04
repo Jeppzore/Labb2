@@ -9,7 +9,7 @@ using System.Threading.Channels;
 class Rat : Enemy
 {
 
-    public Rat(int x, int y) : base(x, y, 'r', ConsoleColor.Red)
+    public Rat(Position position) : base(position, 'r', ConsoleColor.Red, elementType.Rat)
     {
         Health = 10;
         Name = "rat";

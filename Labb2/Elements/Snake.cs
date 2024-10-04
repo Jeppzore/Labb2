@@ -5,7 +5,7 @@
 class Snake : Enemy
 {
 
-    public Snake(int x, int y) : base(x, y, 's', ConsoleColor.Green)
+    public Snake(Position position) : base(position, 's', ConsoleColor.Green, elementType.Snake)
     {
         Health = 20;
         Name = "Snake";

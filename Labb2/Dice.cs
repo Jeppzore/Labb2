@@ -30,6 +30,12 @@ class Dice
     // ett Dice-objekt får en sträng som beskriver objektets konfiguration.
     // t.ex: “3d6+2”.
 
+    /*Console.Write("Testslag: ");
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.Write($"{dice1.ThrowDice(1, diceSides.Next(1, 7), 2)}"); // Test för att slå en tärning. diceSides returnerar ett slumpat tal mellan 1 och 6
+        Console.ResetColor();
+        */
+
 
 }
 

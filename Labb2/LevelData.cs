@@ -6,9 +6,9 @@
 class LevelData
 {
 
-    private List<LevelElement> _elements = new List<LevelElement>(); // Private field elements av typen List<LevelElement>
+    private static List<LevelElement> _elements = new List<LevelElement>(); // Private field elements av typen List<LevelElement>
 
-    public List<LevelElement> Elements { get { return _elements; } } //public readonly property “Elements”.
+    public static List<LevelElement> Elements { get { return _elements; } } //public readonly property “Elements”.
 
 
     //läser in data från filen man anger vid anrop.
@@ -20,6 +20,7 @@ class LevelData
 
     //När filen är inläst bör det alltså finnas ett objekt i “elements” för varje tecken i filen (exkluderat space/radbyte),
     //och en enkel foreach-loop som anropar .Draw() för varje element i listan bör nu rita upp hela banan på skärmen.
+
     public void Load(string fileName)
     {
         _elements = new List<LevelElement>();
@@ -30,6 +31,8 @@ class LevelData
         string line = sr.ReadLine();
 
         int y = 0; // Spårar radnummer (Y-koordinaten)
+        int levelHeight = 0;
+        int LevelWidth = line.Length;
 
         // Läs filen rad för rad
         while (line != null)
@@ -40,29 +43,30 @@ class LevelData
                 if (line[x] == '#') // Kontrollera om tecknet är '#' (Wall)
                 {
                     // Skapa ett nytt LevelElement med objektets motsvarade x och y värde
-                    _elements.Add(new Wall(x, y));
+                    _elements.Add(new Wall(new Position(x, y)));
                 }
 
                 if (line[x] == 'r') // Kontrollera om tecknet är 'r' (Rat)
                 {
                     // Skapa ett nytt LevelElement med objektets motsvarade x och y värde
-                    _elements.Add(new Rat(x, y));
+                    _elements.Add(new Rat(new Position(x, y)));
                 }
 
                 if (line[x] == 's') // Kontrollera om tecknet är 's' (Snake)
                 {
                     // Skapa ett nytt LevelElement med objektets motsvarade x och y värde
-                    _elements.Add(new Snake(x, y));
+                    _elements.Add(new Snake(new Position(x, y)));
                 }
 
-                if (line[x] == '@') // Kontrollera om tecknet är '@' (Player)
+                if (line[x] == '@') // kontrollera om tecknet är '@' (player)
                 {
-                    // Skapa ett nytt LevelElement med objektets motsvarade x och y värde
-                    _elements.Add(new Player(x, y));
+                    // skapa ett nytt levelelement med objektets motsvarade x och y värde
+                    _elements.Add(new Player(new Position(x, y)));
                 }
             }
 
             y++;
+            levelHeight++;
 
             //Läs nästa rad
             line = sr.ReadLine();
@@ -74,8 +78,14 @@ class LevelData
             //forloop j som håller reda på x-position    
 
         }
+        //Spelplanen är 18 tecken (walls) högt och 53 tecken bred
+        Console.SetCursorPosition(1, levelHeight-3);
+        Console.WriteLine($"Spelplanens höjd: {levelHeight-3} Spelplanens bredd:{LevelWidth-26} ");
+
+
 
     }
+
 }        
         
     

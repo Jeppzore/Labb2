@@ -8,36 +8,47 @@
 //publik Draw-metod (utan parametrar), som vi kan anropa för att rita ut ett LevelElement med
 //rätt färg och tecken på rätt plats.
 
-
-abstract class LevelElement 
+enum elementType
 {
-    public int X { get; set; }
-    public int Y { get; set; }
+    Player,
+    Wall,
+    Rat,
+    Snake
+}
+
+ abstract class LevelElement 
+{
+    public Position Position { get; set; }
+
+    public elementType Type { get; set; }
     protected char Icon { get; set; }
     protected ConsoleColor CharacterColor { get; set; }
 
-    protected LevelElement(int x, int y, char icon, ConsoleColor consoleColor)
-    {
-        X = x;
-        Y = y;
+    protected LevelElement(Position pos, char icon, ConsoleColor consoleColor, elementType type)
+    {  
+        Position = pos;
         Icon = icon;
         CharacterColor = consoleColor;
-    }
-
-    private int Position // Property för position
-    {
-        get; set;
+        Type = type;
     }
 
 
     public void Draw() // Metod för att rita ut objekten som kallar på Draw med deras respektive properties
     {
-        Console.SetCursorPosition(X,Y);
+        Console.SetCursorPosition(Position.X, Position.Y);
         Console.ForegroundColor = CharacterColor;
         Console.WriteLine(Icon);
         Console.ResetColor();
+       
+    }
+
+    public void Clear()
+    {
+        Console.SetCursorPosition(Position.X, Position.Y);
+        Console.WriteLine(' ');
 
     }
-    
+
+
 }
 
