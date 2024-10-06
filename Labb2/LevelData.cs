@@ -79,8 +79,8 @@ class LevelData
 
         }
         //Spelplanen är 18 tecken (walls) högt och 53 tecken bred
-        Console.SetCursorPosition(1, levelHeight-3);
-        Console.WriteLine($"Spelplanens höjd: {levelHeight-3} Spelplanens bredd:{LevelWidth-26} ");
+        //Console.SetCursorPosition(1, levelHeight-3);
+        //Console.WriteLine($"Spelplanens höjd: {levelHeight-3} Spelplanens bredd:{LevelWidth-26} ");
 
 
 

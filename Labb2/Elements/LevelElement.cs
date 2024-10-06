@@ -35,7 +35,7 @@ enum elementType
 
     public void Draw() // Metod för att rita ut objekten som kallar på Draw med deras respektive properties
     {
-        Console.SetCursorPosition(Position.X, Position.Y);
+        Console.SetCursorPosition(Position.X, Position.Y+3);
         Console.ForegroundColor = CharacterColor;
         Console.WriteLine(Icon);
         Console.ResetColor();
@@ -44,7 +44,7 @@ enum elementType
 
     public void Clear()
     {
-        Console.SetCursorPosition(Position.X, Position.Y);
+        Console.SetCursorPosition(Position.X, Position.Y+3);
         Console.WriteLine(' ');
 
     }

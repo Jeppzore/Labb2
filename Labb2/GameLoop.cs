@@ -35,7 +35,7 @@ class GameLoop
 
     static void MovePlayer()
     {
-        // Använder LINQ-metod Where på en lista av LevelElement för att hitta första matchen av elementType.Player
+        // Använder LINQ-metod FirstOrDefault på en lista av LevelElement för att hitta första eller default-matchen av elementType.Player
         LevelElement playerElement = LevelData.Elements.FirstOrDefault(x => x.Type == elementType.Player);
 
         // Skapar ny Player med hårdkodad position (om ingen matchning hittas i LevelElement Elements-listan) annars använd den Player som hittade med dennes position
@@ -53,7 +53,7 @@ class GameLoop
         while (myPlayer.Health > 0)
         {
             var key = Console.ReadKey(true).Key;
-            myPlayer.Clear();
+            myPlayer.Clear();          
 
             switch (key)
             {
@@ -124,19 +124,29 @@ class GameLoop
 
     private static void DoPlayerAction(elementType type)
     {
+
+        Random diceSides = new Random();
+        Dice playerAttackDice = new Dice();
+
+
         switch (type)
         {
             case elementType.Wall:
                 break;
 
             case elementType.Rat:
-                //DICE
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.SetCursorPosition(0, 0);
+                Console.WriteLine($"Player attacked {elementType.Rat} with {playerAttackDice.ThrowDice(1, diceSides.Next(1, 7), 2)} points of damage"); // Kallar på metoden Throwdice (1 tärning, med slumpat tal 1-6, + 2 modifier)
+                Console.ResetColor();
                 break;
 
             case elementType.Snake:
-                //DICE
-                break;
-
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.SetCursorPosition(0, 0);
+                Console.WriteLine($"Player attacked {elementType.Snake} with {playerAttackDice.ThrowDice(1, diceSides.Next(1, 7), 2)} points of damage"); // Kallar på metoden Throwdice (1 tärning, med slumpat tal 1-6, + 2 modifier)
+                Console.ResetColor();
+                break;           
         }
     }
 }
