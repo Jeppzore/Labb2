@@ -30,11 +30,14 @@ class GameLoop
             element.Draw();
         }
 
-        MovePlayer();
+        MoveElements();
     }
 
-    static void MovePlayer()
+    static void MoveElements()
     {
+        // Håller koll på antal turns och adderas med 1 för varje gång spelaren rör sig
+        int numberOfTurns = 0;
+
         // Använder LINQ-metod FirstOrDefault på en lista av LevelElement för att hitta första eller default-matchen av elementType.Player
         LevelElement playerElement = LevelData.Elements.FirstOrDefault(x => x.Type == elementType.Player);
 
@@ -42,7 +45,7 @@ class GameLoop
         Player myPlayer;
         if (playerElement is null)
         {
-            myPlayer = new Player(new Position(2,4));
+            myPlayer = new Player(new Position(2, 4));
             myPlayer.Draw();
         }
         else
@@ -53,7 +56,11 @@ class GameLoop
         while (myPlayer.Health > 0)
         {
             var key = Console.ReadKey(true).Key;
-            myPlayer.Clear();          
+            myPlayer.Clear();
+            numberOfTurns++;
+
+            Console.SetCursorPosition(0, 0);
+            Console.WriteLine($"Player name: {myPlayer.Name}     Health: {myPlayer.Health}     Turns: {numberOfTurns}");
 
             switch (key)
             {
@@ -94,7 +101,7 @@ class GameLoop
 
                         if (element is null)
                         {
-                            myPlayer.Position = new Position(myPlayer.Position.X-1, myPlayer.Position.Y);
+                            myPlayer.Position = new Position(myPlayer.Position.X - 1, myPlayer.Position.Y);
                             break;
                         }
 
@@ -109,7 +116,7 @@ class GameLoop
 
                         if (element is null)
                         {
-                            myPlayer.Position = new Position(myPlayer.Position.X+1, myPlayer.Position.Y);
+                            myPlayer.Position = new Position(myPlayer.Position.X + 1, myPlayer.Position.Y);
                             break;
                         }
 
@@ -127,6 +134,8 @@ class GameLoop
 
         Random diceSides = new Random();
         Dice playerAttackDice = new Dice();
+        LevelElement element = LevelData.Elements.FirstOrDefault(element => element.Type == element.Type);
+
 
 
         switch (type)
@@ -136,17 +145,18 @@ class GameLoop
 
             case elementType.Rat:
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.SetCursorPosition(0, 0);
+                Console.SetCursorPosition(0, 1);
                 Console.WriteLine($"Player attacked {elementType.Rat} with {playerAttackDice.ThrowDice(1, diceSides.Next(1, 7), 2)} points of damage"); // Kallar på metoden Throwdice (1 tärning, med slumpat tal 1-6, + 2 modifier)
                 Console.ResetColor();
+
                 break;
 
             case elementType.Snake:
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.SetCursorPosition(0, 0);
+                Console.SetCursorPosition(0, 1);
                 Console.WriteLine($"Player attacked {elementType.Snake} with {playerAttackDice.ThrowDice(1, diceSides.Next(1, 7), 2)} points of damage"); // Kallar på metoden Throwdice (1 tärning, med slumpat tal 1-6, + 2 modifier)
                 Console.ResetColor();
-                break;           
+                break;
         }
     }
 }

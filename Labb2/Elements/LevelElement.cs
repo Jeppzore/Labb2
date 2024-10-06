@@ -16,7 +16,7 @@ enum elementType
     Snake
 }
 
- abstract class LevelElement 
+abstract class LevelElement
 {
     public Position Position { get; set; }
 
@@ -25,7 +25,7 @@ enum elementType
     protected ConsoleColor CharacterColor { get; set; }
 
     protected LevelElement(Position pos, char icon, ConsoleColor consoleColor, elementType type)
-    {  
+    {
         Position = pos;
         Icon = icon;
         CharacterColor = consoleColor;
@@ -35,16 +35,16 @@ enum elementType
 
     public void Draw() // Metod för att rita ut objekten som kallar på Draw med deras respektive properties
     {
-        Console.SetCursorPosition(Position.X, Position.Y+3);
+        Console.SetCursorPosition(Position.X, Position.Y + 3);
         Console.ForegroundColor = CharacterColor;
         Console.WriteLine(Icon);
         Console.ResetColor();
-       
+
     }
 
     public void Clear()
     {
-        Console.SetCursorPosition(Position.X, Position.Y+3);
+        Console.SetCursorPosition(Position.X, Position.Y + 3);
         Console.WriteLine(' ');
 
     }
