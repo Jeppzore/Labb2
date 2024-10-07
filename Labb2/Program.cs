@@ -9,8 +9,7 @@ internal class Program
     {
         // Startar spelet
         GameLoop.Start();
-    
-
+   
     }
 
 }

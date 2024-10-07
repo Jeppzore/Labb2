@@ -17,9 +17,35 @@ abstract class Enemy : LevelElement
 
     public string Name { get; set; }
     public int Health { get; set; } // Property HP
-    public int AttackDice { get; set; } // Property AttackDice
-    public int DefenceDice { get; set; } // Property DefenceDice
+    public Dice AttackDice { get; set; } // Property AttackDice
+    public Dice DefenceDice { get; set; } // Property DefenceDice
 
-    public abstract void Update(); // Abstract Update-metod som inte implementeras här men som krävs implementation av alla klasser som ärver av Enemy
+    protected bool IsMoveAllowed(int newX, int newY, List<LevelElement> elements)
+    {
+        foreach (var element in elements)
+        {
+            if (element.Position.X == newX && element.Position.Y == newY)
+            {
+                return false; // kollision med ett objekt
+            }
+        }
+        return true; // Ingen kollision, fltyten är giltig
+    }
+
+    protected void ClearOldPosition()
+    {
+        Console.SetCursorPosition(Position.X, Position.Y);
+        Console.Write(' ');
+    }
+
+    protected void DrawNewPosition()
+    {
+        Console.SetCursorPosition(Position.X, Position.Y);
+        Console.ForegroundColor = this.CharacterColor;
+        Console.Write(Icon);
+        Console.ResetColor();
+    }
+
+    public abstract void Update(List<LevelElement> elements); // Abstract Update-metod som inte implementeras här men som krävs implementation av alla klasser som ärver av Enemy
 
 }

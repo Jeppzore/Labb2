@@ -35,16 +35,16 @@ abstract class LevelElement
 
     public void Draw() // Metod för att rita ut objekten som kallar på Draw med deras respektive properties
     {
-        Console.SetCursorPosition(Position.X, Position.Y + 3);
+        Console.SetCursorPosition(Position.X, Position.Y + 4);
         Console.ForegroundColor = CharacterColor;
         Console.WriteLine(Icon);
         Console.ResetColor();
 
     }
 
-    public void Clear()
+    public void Clear() // Metod för att ersätta objektets position med ett mellanrum
     {
-        Console.SetCursorPosition(Position.X, Position.Y + 3);
+        Console.SetCursorPosition(Position.X, Position.Y + 4);
         Console.WriteLine(' ');
 
     }

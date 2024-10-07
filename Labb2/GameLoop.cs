@@ -40,6 +40,7 @@ class GameLoop
 
         // Använder LINQ-metod FirstOrDefault på en lista av LevelElement för att hitta första eller default-matchen av elementType.Player
         LevelElement playerElement = LevelData.Elements.FirstOrDefault(x => x.Type == elementType.Player);
+        LevelElement ratElement = LevelData.Elements.FirstOrDefault(x => x.Type == elementType.Rat);
 
         // Skapar ny Player med hårdkodad position (om ingen matchning hittas i LevelElement Elements-listan) annars använd den Player som hittade med dennes position
         Player myPlayer;
@@ -53,10 +54,21 @@ class GameLoop
             myPlayer = new Player(playerElement.Position); // Ger nya Player objektet positionen av playerElement.Position
         }
 
+        // Skapar ny Rat med den rat som hittades och dennes respektive position
+        Rat myRat;
+        myRat = new Rat(ratElement.Position); // Ger nya Rat objektet positionen av ratElement.Position
+
         while (myPlayer.Health > 0)
         {
             var key = Console.ReadKey(true).Key;
+
+            foreach (var element in LevelData.Elements.OfType<Enemy>())
+            {
+                element.Update(LevelData.Elements);
+            }
+
             myPlayer.Clear();
+
             numberOfTurns++;
 
             Console.SetCursorPosition(0, 0);
@@ -136,8 +148,6 @@ class GameLoop
         Dice playerAttackDice = new Dice();
         LevelElement element = LevelData.Elements.FirstOrDefault(element => element.Type == element.Type);
 
-
-
         switch (type)
         {
             case elementType.Wall:
@@ -148,7 +158,6 @@ class GameLoop
                 Console.SetCursorPosition(0, 1);
                 Console.WriteLine($"Player attacked {elementType.Rat} with {playerAttackDice.ThrowDice(1, diceSides.Next(1, 7), 2)} points of damage"); // Kallar på metoden Throwdice (1 tärning, med slumpat tal 1-6, + 2 modifier)
                 Console.ResetColor();
-
                 break;
 
             case elementType.Snake:

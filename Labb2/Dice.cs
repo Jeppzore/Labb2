@@ -12,6 +12,10 @@ class Dice
         return result;
     }
 
+    public override string ToString()
+    {
+        return $"{numberOfDice}"
+    }
 
     // Gör även en override av Dice.ToString(), så att man när man skriver ut
     // ett Dice-objekt får en sträng som beskriver objektets konfiguration.
