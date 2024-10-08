@@ -24,7 +24,7 @@ class Player : LevelElement
 
     public Player(Position position) : base(position, '@', ConsoleColor.Yellow, elementType.Player)
     {
-        Health = 10;
+        Health = 100;
         Name = "Player";
         Level = 1;
     }

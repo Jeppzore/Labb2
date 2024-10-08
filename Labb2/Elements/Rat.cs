@@ -49,9 +49,6 @@ class Rat : Enemy
 
         if (IsMoveAllowed(newRatPosition.X, newRatPosition.Y, Elements))
         {
-            Console.SetCursorPosition(0, 26);
-            Console.WriteLine($"Jag får gå till X: {newRatPosition.X} och Y: {newRatPosition.Y} ");
-
             Position = newRatPosition;
         }
 

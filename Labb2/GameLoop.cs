@@ -21,9 +21,11 @@ class GameLoop
 {
     public static void Start()
     {
-        Console.Write("Welcome to my Dungeon Crawler!\nPlease enter your name: ");
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.Write("Welcome to Jesper's Dungeon Crawler!\nPlease enter your name: ");
         string playerName = Console.ReadLine();       
 
+        Console.ResetColor();
         Console.Clear();
 
         LevelData level = new LevelData();
@@ -55,9 +57,11 @@ class GameLoop
         while (myPlayer.Health > 0)
         {
             Console.SetCursorPosition(0, 0);
+            Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine($"Name: {myPlayer.Name}     Health: {myPlayer.Health}    Level: {myPlayer.Level}     Turns: {numberOfTurns}");
-            numberOfTurns++;
+            Console.ResetColor();
 
+            numberOfTurns++;
             myPlayer.Draw();
             MovePlayer(myPlayer);
 
@@ -86,8 +90,10 @@ class GameLoop
                         myPlayer.Position = new Position(myPlayer.Position.X, myPlayer.Position.Y - 1);
                         break;
                     }
-
-                    DoPlayerAction(element.Type);
+                    else if (element is Enemy enemy) // Kolla om elementet är en Enemy
+                    {
+                    DoPlayerAction(myPlayer, enemy); // Attackera enemy
+                    }
                 }
                 break;
 
@@ -101,8 +107,10 @@ class GameLoop
                         myPlayer.Position = new Position(myPlayer.Position.X, myPlayer.Position.Y + 1);
                         break;
                     }
-
-                    DoPlayerAction(element.Type);
+                    else if (element is Enemy enemy) // Kolla om elementet är en Enemy
+                    {
+                        DoPlayerAction(myPlayer, enemy); // Attackera enemy
+                    }
                 }
                 break;
 
@@ -116,8 +124,10 @@ class GameLoop
                         myPlayer.Position = new Position(myPlayer.Position.X - 1, myPlayer.Position.Y);
                         break;
                     }
-
-                    DoPlayerAction(element.Type);
+                    else if (element is Enemy enemy) // Kolla om elementet är en Enemy
+                    {
+                        DoPlayerAction(myPlayer, enemy); // Attackera enemy
+                    }
                 }
                 break;
 
@@ -131,38 +141,29 @@ class GameLoop
                         myPlayer.Position = new Position(myPlayer.Position.X + 1, myPlayer.Position.Y);
                         break;
                     }
-
-                    DoPlayerAction(element.Type);
-                    // Om jag flyttar in i en enemy - gör metod attack på enemy
+                    else if (element is Enemy enemy) // Kolla om elementet är en Enemy
+                    {
+                        DoPlayerAction(myPlayer, enemy); // Attackera enemy
+                    }                 
                 }
                 break;
 
         }
     }
 
-        private static void DoPlayerAction(elementType type)
-        {
-            Dice playerAttackDice = new Dice(2, 6, 2);
+    private static void DoPlayerAction(Player myPlayer, Enemy enemy)
+    {
+        Dice playerAttackDice = new Dice(1, 6, 2);
+        int damage = playerAttackDice.ThrowDice();
 
-            switch (type)
-            {
-                case elementType.Wall:
-                    break;
+        // Minska enemy health med resultatet från tärningskastet
+        enemy.TakeDamage(damage);
 
-                case elementType.Rat:
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.SetCursorPosition(0, 1);
-                    Console.WriteLine($"Player attacked {elementType.Rat} with: {playerAttackDice.ThrowDice()} ({playerAttackDice}) points of damage");
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.SetCursorPosition(0, 2);
+        Console.WriteLine($"{myPlayer.Name} attacked {enemy.Name} with: {damage} ({playerAttackDice}) points of damage. {enemy.Name} has {enemy.Health} health left.".PadRight(Console.BufferWidth));
+        Console.ResetColor();
 
-                    Console.ResetColor();
-                    break;
+    }
 
-                case elementType.Snake:
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.SetCursorPosition(0, 1);
-                    Console.WriteLine($"Player attacked {elementType.Snake} with: {playerAttackDice.ThrowDice()} ({playerAttackDice}) points of damage");
-                    Console.ResetColor();
-                    break;
-            }
-        }
 }
