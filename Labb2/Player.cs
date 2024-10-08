@@ -19,6 +19,7 @@ class Player : LevelElement
 
     public int Health { get; set; }
     public int Level { get; set; }
+    public int Experience { get; set; }
     public string Name { get; set; }
 
 
@@ -27,6 +28,33 @@ class Player : LevelElement
         Health = 100;
         Name = "Player";
         Level = 1;
+        Experience = 0;
+    }
+
+    public void PlayerTakeDamage(int damage)
+    {
+        Health -= damage;
+    }
+
+    public void CurrentLevelCheck()
+    {
+        if (Level == 1 && Experience >= 30) 
+        {
+            Level++;
+            SetHP();
+        }
+
+        if (Level == 2 && Experience >= 70)
+        {
+            Level++;
+            SetHP();
+        }
+
+    }
+
+    public void SetHP()
+    {
+        Health *= Level;
     }
 
 }

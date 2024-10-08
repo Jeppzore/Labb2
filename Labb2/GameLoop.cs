@@ -15,18 +15,40 @@
 //Detsamma gäller om en fiende flyttar sig till platsen där spelaren står.
 //Fiender kan dock inte attackera varandra i spelet.
 
-using System.Xml.Linq;
-
 class GameLoop
 {
     public static void Start()
     {
         Console.ForegroundColor = ConsoleColor.Yellow;
-        Console.Write("Welcome to Jesper's Dungeon Crawler!\nPlease enter your name: ");
-        string playerName = Console.ReadLine();       
+        Console.Write("Welcome to Jesper's Dungeon Crawler!\nPlease enter your name (max 12 characters): ");
+        string playerName = Console.ReadLine();
+
+        if (playerName.Length > 12)
+        {
+            Console.Clear();
+            Start();
+        }
 
         Console.ResetColor();
         Console.Clear();
+
+        // Display the user control
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.SetCursorPosition(70, 7);
+        Console.WriteLine("Controls:");
+        Console.SetCursorPosition(70, 8);
+        Console.WriteLine("W: Up");
+        Console.SetCursorPosition(70, 9);
+        Console.WriteLine("A: Left");
+        Console.SetCursorPosition(70, 10);
+        Console.WriteLine("S: Down");
+        Console.SetCursorPosition(70, 11);
+        Console.WriteLine("D: Right");
+
+        Console.SetCursorPosition(70, 13);
+        Console.WriteLine("Esc: Restart game");
+        Console.ResetColor();
+
 
         LevelData level = new LevelData();
 
@@ -45,20 +67,22 @@ class GameLoop
 
     private static void MoveElements(string playerName)
     {
-        // Håller koll på antal turns och adderas med 1 för varje gång spelaren rör sig
         int numberOfTurns = 0;
 
         // Skapar ny Player med hittat position och Använder LINQ-metod FirstOrDefault
         // på en lista av LevelElement för att hitta första eller default-matchen av Player
         Player myPlayer = (Player)LevelData.Elements.FirstOrDefault(x => x.Type == elementType.Player);
         myPlayer.Name = playerName;
+        myPlayer.SetHP();
 
         // Loopen som körs så länge spelaren lever
         while (myPlayer.Health > 0)
         {
+            myPlayer.CurrentLevelCheck();
+
             Console.SetCursorPosition(0, 0);
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine($"Name: {myPlayer.Name}     Health: {myPlayer.Health}    Level: {myPlayer.Level}     Turns: {numberOfTurns}");
+            Console.WriteLine($"Name: {myPlayer.Name}     Health: {myPlayer.Health}    Level: {myPlayer.Level}     Turns: {numberOfTurns}".PadRight(Console.BufferWidth));
             Console.ResetColor();
 
             numberOfTurns++;
@@ -70,8 +94,15 @@ class GameLoop
             {
                 element.Update(LevelData.Elements);
             }
-
         }
+
+        // Om myPlayer.Health > 0 är spelet över
+        Console.Clear();
+        Console.SetCursorPosition(0, 0);
+        Console.WriteLine("Game over! Restarting game in 10 seconds...");
+        Thread.Sleep(10000);
+        Start();
+
     }
 
     private static void MovePlayer(Player myPlayer)
@@ -92,7 +123,7 @@ class GameLoop
                     }
                     else if (element is Enemy enemy) // Kolla om elementet är en Enemy
                     {
-                    DoPlayerAction(myPlayer, enemy); // Attackera enemy
+                        DoPlayerAction(myPlayer, enemy); // Attackera enemy
                     }
                 }
                 break;
@@ -144,26 +175,28 @@ class GameLoop
                     else if (element is Enemy enemy) // Kolla om elementet är en Enemy
                     {
                         DoPlayerAction(myPlayer, enemy); // Attackera enemy
-                    }                 
+                    }
                 }
                 break;
 
+            case ConsoleKey.Escape: // ESC
+                Console.Clear();
+                Start();
+                break;
         }
     }
 
     private static void DoPlayerAction(Player myPlayer, Enemy enemy)
     {
         Dice playerAttackDice = new Dice(1, 6, 2);
-        int damage = playerAttackDice.ThrowDice();
+        int playerDamage = playerAttackDice.ThrowDice();
 
-        // Minska enemy health med resultatet från tärningskastet
-        enemy.TakeDamage(damage);
+        // Minska enemy health med resultatet från tärningskastet och kalla på TakeDamage() i Enemy klasssen
+        enemy.EnemyTakeDamage(playerDamage, myPlayer);
 
         Console.ForegroundColor = ConsoleColor.Green;
         Console.SetCursorPosition(0, 2);
-        Console.WriteLine($"{myPlayer.Name} attacked {enemy.Name} with: {damage} ({playerAttackDice}) points of damage. {enemy.Name} has {enemy.Health} health left.".PadRight(Console.BufferWidth));
+        Console.WriteLine($"{myPlayer.Name} attacked {enemy.Name} with: {playerDamage} ({playerAttackDice}) points of damage. {enemy.Name} has {enemy.Health} health left.".PadRight(Console.BufferWidth));
         Console.ResetColor();
-
     }
-
 }
