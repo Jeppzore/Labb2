@@ -15,10 +15,17 @@
 //Detsamma gäller om en fiende flyttar sig till platsen där spelaren står.
 //Fiender kan dock inte attackera varandra i spelet.
 
+using System.Xml.Linq;
+
 class GameLoop
 {
     public static void Start()
     {
+        Console.Write("Welcome to my Dungeon Crawler!\nPlease enter your name: ");
+        string playerName = Console.ReadLine();       
+
+        Console.Clear();
+
         LevelData level = new LevelData();
 
         string filePath = @"Levels\\Level1.txt";
@@ -30,142 +37,132 @@ class GameLoop
             element.Draw();
         }
 
-        MoveElements();
+        MoveElements(playerName);
     }
 
-    static void MoveElements()
+
+    private static void MoveElements(string playerName)
     {
         // Håller koll på antal turns och adderas med 1 för varje gång spelaren rör sig
         int numberOfTurns = 0;
 
-        // Använder LINQ-metod FirstOrDefault på en lista av LevelElement för att hitta första eller default-matchen av elementType.Player
-        LevelElement playerElement = LevelData.Elements.FirstOrDefault(x => x.Type == elementType.Player);
-        LevelElement ratElement = LevelData.Elements.FirstOrDefault(x => x.Type == elementType.Rat);
+        // Skapar ny Player med hittat position och Använder LINQ-metod FirstOrDefault
+        // på en lista av LevelElement för att hitta första eller default-matchen av Player
+        Player myPlayer = (Player)LevelData.Elements.FirstOrDefault(x => x.Type == elementType.Player);
+        myPlayer.Name = playerName;
 
-        // Skapar ny Player med hårdkodad position (om ingen matchning hittas i LevelElement Elements-listan) annars använd den Player som hittade med dennes position
-        Player myPlayer;
-        if (playerElement is null)
-        {
-            myPlayer = new Player(new Position(2, 4));
-            myPlayer.Draw();
-        }
-        else
-        {
-            myPlayer = new Player(playerElement.Position); // Ger nya Player objektet positionen av playerElement.Position
-        }
-
-        // Skapar ny Rat med den rat som hittades och dennes respektive position
-        Rat myRat;
-        myRat = new Rat(ratElement.Position); // Ger nya Rat objektet positionen av ratElement.Position
-
+        // Loopen som körs så länge spelaren lever
         while (myPlayer.Health > 0)
         {
-            var key = Console.ReadKey(true).Key;
+            Console.SetCursorPosition(0, 0);
+            Console.WriteLine($"Name: {myPlayer.Name}     Health: {myPlayer.Health}    Level: {myPlayer.Level}     Turns: {numberOfTurns}");
+            numberOfTurns++;
 
+            myPlayer.Draw();
+            MovePlayer(myPlayer);
+
+            // För varje gång MovePlayer har körts - kalla på Update() metoden för samtliga Enemy
             foreach (var element in LevelData.Elements.OfType<Enemy>())
             {
                 element.Update(LevelData.Elements);
             }
 
-            myPlayer.Clear();
+        }
+    }
 
-            numberOfTurns++;
+    private static void MovePlayer(Player myPlayer)
+    {
+        var key = Console.ReadKey(true).Key;
+        myPlayer.Clear();
+        switch (key)
+        {
+            case ConsoleKey.W: // Upp
+                if (myPlayer.Position.Y > 0)
+                {
+                    LevelElement element = LevelData.Elements.FirstOrDefault(elem => elem.Position.X == myPlayer.Position.X && elem.Position.Y == myPlayer.Position.Y - 1);
 
-            Console.SetCursorPosition(0, 0);
-            Console.WriteLine($"Player name: {myPlayer.Name}     Health: {myPlayer.Health}     Turns: {numberOfTurns}");
+                    if (element is null)
+                    {
+                        myPlayer.Position = new Position(myPlayer.Position.X, myPlayer.Position.Y - 1);
+                        break;
+                    }
 
-            switch (key)
+                    DoPlayerAction(element.Type);
+                }
+                break;
+
+            case ConsoleKey.S: // Ner
+                if (myPlayer.Position.Y < 18 - 1)
+                {
+                    LevelElement element = LevelData.Elements.FirstOrDefault(elem => elem.Position.X == myPlayer.Position.X && elem.Position.Y == myPlayer.Position.Y + 1);
+
+                    if (element is null)
+                    {
+                        myPlayer.Position = new Position(myPlayer.Position.X, myPlayer.Position.Y + 1);
+                        break;
+                    }
+
+                    DoPlayerAction(element.Type);
+                }
+                break;
+
+            case ConsoleKey.A: // Vänster
+                if (myPlayer.Position.X > 0)
+                {
+                    LevelElement element = LevelData.Elements.FirstOrDefault(elem => elem.Position.X == myPlayer.Position.X - 1 && elem.Position.Y == myPlayer.Position.Y);
+
+                    if (element is null)
+                    {
+                        myPlayer.Position = new Position(myPlayer.Position.X - 1, myPlayer.Position.Y);
+                        break;
+                    }
+
+                    DoPlayerAction(element.Type);
+                }
+                break;
+
+            case ConsoleKey.D: // Höger
+                if (myPlayer.Position.X < 53 - 1)
+                {
+                    LevelElement element = LevelData.Elements.FirstOrDefault(elem => elem.Position.X == myPlayer.Position.X + 1 && elem.Position.Y == myPlayer.Position.Y);
+
+                    if (element is null)
+                    {
+                        myPlayer.Position = new Position(myPlayer.Position.X + 1, myPlayer.Position.Y);
+                        break;
+                    }
+
+                    DoPlayerAction(element.Type);
+                    // Om jag flyttar in i en enemy - gör metod attack på enemy
+                }
+                break;
+
+        }
+    }
+
+        private static void DoPlayerAction(elementType type)
+        {
+            Dice playerAttackDice = new Dice(2, 6, 2);
+
+            switch (type)
             {
-                case ConsoleKey.W: // Upp
-                    if (myPlayer.Position.Y > 0)
-                    {
-                        LevelElement element = LevelData.Elements.FirstOrDefault(elem => elem.Position.X == myPlayer.Position.X && elem.Position.Y == myPlayer.Position.Y - 1);
-
-                        if (element is null)
-                        {
-                            myPlayer.Position = new Position(myPlayer.Position.X, myPlayer.Position.Y - 1);
-                            break;
-                        }
-
-                        DoPlayerAction(element.Type);
-                    }
+                case elementType.Wall:
                     break;
 
-                case ConsoleKey.S: // Ner
-                    if (myPlayer.Position.Y < 18 - 1)
-                    {
-                        LevelElement element = LevelData.Elements.FirstOrDefault(elem => elem.Position.X == myPlayer.Position.X && elem.Position.Y == myPlayer.Position.Y + 1);
+                case elementType.Rat:
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.SetCursorPosition(0, 1);
+                    Console.WriteLine($"Player attacked {elementType.Rat} with: {playerAttackDice.ThrowDice()} ({playerAttackDice}) points of damage");
 
-                        if (element is null)
-                        {
-                            myPlayer.Position = new Position(myPlayer.Position.X, myPlayer.Position.Y + 1);
-                            break;
-                        }
-
-                        DoPlayerAction(element.Type);
-                    }
+                    Console.ResetColor();
                     break;
 
-                case ConsoleKey.A: // Vänster
-                    if (myPlayer.Position.X > 0)
-                    {
-                        LevelElement element = LevelData.Elements.FirstOrDefault(elem => elem.Position.X == myPlayer.Position.X - 1 && elem.Position.Y == myPlayer.Position.Y);
-
-                        if (element is null)
-                        {
-                            myPlayer.Position = new Position(myPlayer.Position.X - 1, myPlayer.Position.Y);
-                            break;
-                        }
-
-                        DoPlayerAction(element.Type);
-                    }
-                    break;
-
-                case ConsoleKey.D: // Höger
-                    if (myPlayer.Position.X < 53 - 1)
-                    {
-                        LevelElement element = LevelData.Elements.FirstOrDefault(elem => elem.Position.X == myPlayer.Position.X + 1 && elem.Position.Y == myPlayer.Position.Y);
-
-                        if (element is null)
-                        {
-                            myPlayer.Position = new Position(myPlayer.Position.X + 1, myPlayer.Position.Y);
-                            break;
-                        }
-
-                        DoPlayerAction(element.Type);
-                    }
+                case elementType.Snake:
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.SetCursorPosition(0, 1);
+                    Console.WriteLine($"Player attacked {elementType.Snake} with: {playerAttackDice.ThrowDice()} ({playerAttackDice}) points of damage");
+                    Console.ResetColor();
                     break;
             }
-
-            myPlayer.Draw();
         }
-    }
-
-    private static void DoPlayerAction(elementType type)
-    {
-
-        Random diceSides = new Random();
-        Dice playerAttackDice = new Dice();
-        LevelElement element = LevelData.Elements.FirstOrDefault(element => element.Type == element.Type);
-
-        switch (type)
-        {
-            case elementType.Wall:
-                break;
-
-            case elementType.Rat:
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.SetCursorPosition(0, 1);
-                Console.WriteLine($"Player attacked {elementType.Rat} with {playerAttackDice.ThrowDice(1, diceSides.Next(1, 7), 2)} points of damage"); // Kallar på metoden Throwdice (1 tärning, med slumpat tal 1-6, + 2 modifier)
-                Console.ResetColor();
-                break;
-
-            case elementType.Snake:
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.SetCursorPosition(0, 1);
-                Console.WriteLine($"Player attacked {elementType.Snake} with {playerAttackDice.ThrowDice(1, diceSides.Next(1, 7), 2)} points of damage"); // Kallar på metoden Throwdice (1 tärning, med slumpat tal 1-6, + 2 modifier)
-                Console.ResetColor();
-                break;
-        }
-    }
 }

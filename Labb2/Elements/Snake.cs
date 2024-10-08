@@ -1,7 +1,7 @@
 ﻿
-// Varken spelare, rats eller snakes kan gå igenom väggar eller varandra.
+// Snake kan inte gå igenom väggar eller varandra.
 // Snake står still om spelaren är mer än 2 rutor bort,
-// annars förflyttar den sig bort från spelaren.
+// annars förflyttar den sig bort från spelaren med ett steg i motsatt riktning
 class Snake : Enemy
 {
 
@@ -11,13 +11,13 @@ class Snake : Enemy
         Name = "Snake";
     }
 
-
-    public override void Update(List<LevelElement> elements)
+    public override void Update(List<LevelElement> Elements)
     {
 
         ClearOldPosition();
 
-        Player player = elements.OfType<Player>().FirstOrDefault();
+        Player player = Elements.OfType<Player>().FirstOrDefault();
+        Position newSnakePosition = new Position(this.Position);
 
         if (player == null)
             return; // Om spelaren inte finns, avsluta metoden
@@ -25,44 +25,38 @@ class Snake : Enemy
         // Beräkna avstånd till spelaren
         int distanceToPlayerX = Math.Abs(player.Position.X - Position.X);
         int distanceToPlayerY = Math.Abs(player.Position.Y - Position.Y);
-        
-        // Om spelaren är mer än 2 rutor bort, stoppa ormen från att fltyta sig
+
+        // Om spelaren är mer än 2 rutor bort, stoppa ormen från att röra sig
         if (distanceToPlayerX > 2 || distanceToPlayerY > 2)
         {
-            //Rita ormen på sin nuvarande position om den inte rör sig
             DrawNewPosition();
             return;
         }
 
-        // Annars flytta ormen bort från spelaren
-        int newSnakePositionX = Position.X;
-        int newSnakePositionY = Position.Y;
-
         // Rör omren bort från spelaren i X-led
-        if(player.Position.X < Position.X)
+        if (player.Position.X < Position.X)
         {
-            newSnakePositionX = Position.X + 1; // Flytta ormen till höger
+            newSnakePosition.X = Position.X + 1; // Flytta ormen till höger
         }
         else if (player.Position.X > Position.X)
         {
-            newSnakePositionX = Position.X - 1; // Flytta ormen till höger
+            newSnakePosition.X = Position.X - 1; // Flytta ormen till höger
         }
 
         // Rör omren bort från spelaren i Y-led
-        if (player.Position.Y < Position.Y) // Spelaren är ovanför
+        if (player.Position.Y < Position.Y) // Om spelaren är över
         {
-            newSnakePositionX = Position.Y + 1; // Flytta ormen ner
+            newSnakePosition.Y = Position.Y + 1; // Flytta ormen ner
         }
-        else if (player.Position.Y > Position.Y) // Spelaren är under
+        else if (player.Position.Y > Position.Y) // Om spelaren är under
         {
-            newSnakePositionX = Position.Y - 1; // Flytta ormen upp
+            newSnakePosition.Y = Position.Y - 1; // Flytta ormen upp
         }
 
-        if (IsMoveAllowed(newSnakePositionX, newSnakePositionY, elements))
+        // Kontrollera om rörelsen är tillåten
+        if (IsMoveAllowed(newSnakePosition.X, newSnakePosition.Y, Elements))
         {
-            int newSnakePositionX = Position.X;
-            int newSnakePositionY = Position.Y;
-
+            Position = newSnakePosition; // Uppdatera ormens position
         }
 
         DrawNewPosition();

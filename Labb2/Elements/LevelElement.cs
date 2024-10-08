@@ -24,14 +24,13 @@ abstract class LevelElement
     protected char Icon { get; set; }
     protected ConsoleColor CharacterColor { get; set; }
 
-    protected LevelElement(Position pos, char icon, ConsoleColor consoleColor, elementType type)
+    protected LevelElement(Position position, char icon, ConsoleColor consoleColor, elementType type)
     {
-        Position = pos;
+        Position = position;
         Icon = icon;
         CharacterColor = consoleColor;
         Type = type;
     }
-
 
     public void Draw() // Metod för att rita ut objekten som kallar på Draw med deras respektive properties
     {
@@ -48,7 +47,6 @@ abstract class LevelElement
         Console.WriteLine(' ');
 
     }
-
 
 }
 

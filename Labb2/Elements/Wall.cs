@@ -12,7 +12,4 @@ class Wall : LevelElement // Ärver från LevelElements (abstract)
 
     }
 
-    public char wall = '#';
-    //Lägg till färg på wall?
-
 }

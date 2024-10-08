@@ -8,7 +8,7 @@ internal class Program
     private static void Main(string[] args)
     {
         // Startar spelet
-        GameLoop.Start();
+        GameLoop.Start();       
    
     }
 

@@ -25,7 +25,7 @@ abstract class Enemy : LevelElement
         foreach (var element in elements)
         {
             if (element.Position.X == newX && element.Position.Y == newY)
-            {
+            {              
                 return false; // kollision med ett objekt
             }
         }
@@ -34,14 +34,14 @@ abstract class Enemy : LevelElement
 
     protected void ClearOldPosition()
     {
-        Console.SetCursorPosition(Position.X, Position.Y);
+        Console.SetCursorPosition(Position.X, Position.Y + 4);
         Console.Write(' ');
     }
 
     protected void DrawNewPosition()
     {
-        Console.SetCursorPosition(Position.X, Position.Y);
-        Console.ForegroundColor = this.CharacterColor;
+        Console.SetCursorPosition(Position.X, Position.Y + 4);
+        Console.ForegroundColor = CharacterColor;
         Console.Write(Icon);
         Console.ResetColor();
     }
