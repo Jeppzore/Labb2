@@ -43,8 +43,11 @@ abstract class Enemy : LevelElement
 
     public void EnemyDealWithDamage(int damage, Player player)
     {
-        // Reducera Enemy.Health med den damage som skickas in från spelaren
-        Health -= damage;
+        // Reducera Enemy.Health med den damage som skickas in från spelaren om damage >= 0
+        if (damage >= 0)
+        {
+            Health -= damage;
+        }
 
         if (Health <= 0)
         {
@@ -82,11 +85,11 @@ abstract class Enemy : LevelElement
         {
             Dice ratAttackDice = new Dice(1, 6, 1);
             int ratDamage = ratAttackDice.ThrowDice();
-            player.PlayerDealWithDamage(ratDamage);
+            player.PlayerDealWithDamage(ratDamage, this);
 
             Console.ForegroundColor = ConsoleColor.Red;
             Console.SetCursorPosition(0, 3);
-            Console.WriteLine($"{this.Name} attacked {player.Name} with: {ratDamage} ({ratAttackDice}) points of damage. {player.Name} has {player.Health} health left.".PadRight(Console.BufferWidth));
+            Console.WriteLine($"{this.Name} attacked {player.Name} with: {ratDamage} ({ratAttackDice}) damage. {player.Name} has {player.Health} health left.".PadRight(Console.BufferWidth));
             Console.ResetColor();
         }
 
@@ -94,11 +97,11 @@ abstract class Enemy : LevelElement
         {
             Dice snakeAttackDice = new Dice(3, 6, 1);
             int snakeDamage = snakeAttackDice.ThrowDice();
-            player.PlayerDealWithDamage(snakeDamage);
+            player.PlayerDealWithDamage(snakeDamage, this);
 
             Console.ForegroundColor = ConsoleColor.Red;
             Console.SetCursorPosition(0, 3);
-            Console.WriteLine($"{this.Name} attacked {player.Name} with: {snakeDamage} ({snakeAttackDice}) points of damage. {player.Name} has {player.Health} health left.".PadRight(Console.BufferWidth));
+            Console.WriteLine($"{this.Name} attacked {player.Name} with: {snakeDamage} ({snakeAttackDice}) damage. {player.Name} has {player.Health} health left.".PadRight(Console.BufferWidth));
             Console.ResetColor();
         }
     }

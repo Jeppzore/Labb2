@@ -2,13 +2,8 @@
 // (upp, ner, höger eller vänster) varje omgång.
 // Varken spelare, rats eller snakes kan gå igenom väggar eller varandra.
 
-
-using System.Xml.Linq;
-using System.Xml;
-
 class Rat : Enemy
 {
-
     private static Random random = new Random();
 
     public Rat(Position position) : base(position, 'r', ConsoleColor.Red, elementType.Rat)
@@ -16,9 +11,6 @@ class Rat : Enemy
         Health = 10;
         Name = "rat";
     }
-
-    // attack = 1d6+3
-    // defence = 1d6+1
 
     public override void Update(List<LevelElement> Elements) //Rörelsemönstret/ allt som fienden ska göra i varje drag
     {
@@ -28,7 +20,6 @@ class Rat : Enemy
         int ratMove = random.Next(4);
 
         Position newRatPosition = new Position(this.Position);
-
 
         switch (ratMove)
         {
@@ -54,13 +45,17 @@ class Rat : Enemy
         {
             Dice ratAttackDice = new Dice(1, 6, 1);
             int ratDamage = ratAttackDice.ThrowDice();
-            player.PlayerDealWithDamage(ratDamage);
+
+            Dice playerDefenceDice = new Dice(1, 6, 0);
+            int playerDefence = playerDefenceDice.ThrowDice();
+
+            player.PlayerDealWithDamage(ratDamage - playerDefence, this);
 
             Console.SetCursorPosition(0, 30);
-            Console.WriteLine($"{this} attacked {player} with {ratDamage} ({ratAttackDice}) points of damage".PadRight(Console.BufferWidth));
+            Console.WriteLine($"{this} attacked {player} with {ratDamage - playerDefence} ({ratAttackDice}) damage. {player.Name} defence: {playerDefence} ({playerDefenceDice})".PadRight(Console.BufferWidth));
         }
 
-            if (IsMoveAllowed(newRatPosition.X, newRatPosition.Y, Elements))
+        if (IsMoveAllowed(newRatPosition.X, newRatPosition.Y, Elements))
         {
             Position = newRatPosition;
         }
@@ -69,23 +64,3 @@ class Rat : Enemy
     }
 
 }
-
-
-
-
-//this.Position = new Position(this.Position.X, this.Position.Y);
-//this.Draw();
-
-//this.Health--;
-//Console.SetCursorPosition(0, 25);
-//Console.WriteLine($"Rat Health: {this.Health}");
-
-//if (this.Health <= 0)
-//{
-//    Console.WriteLine("The rats died");
-//    this.Clear();
-//}
-
-//Rat rat;
-//LevelElement moveRat = LevelData.Elements.FirstOrDefault(elem => elem.Position.X == rat.Position.X && elem.Position.Y == moveRat.Position.Y - 1);
-//rat = new Rat(moveRat.Position); // Ger nya Rat objektet positionen av ratElement.Position

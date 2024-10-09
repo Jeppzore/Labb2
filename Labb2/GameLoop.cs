@@ -1,19 +1,4 @@
-﻿//En game loop är en loop som körs om och om igen medan spelet är igång,
-//och i vårat fall kommer ett varv i loopen motsvaras av en omgång i spelet.
-//För varje varv i loopen inväntar vi att användaren trycker in en knapp;
-//sedan utför vi spelarens drag, följt av datorns drag
-//(uppdatera alla fiender), innan vi loopar igen.
-//Möjligtvis kan man ha en knapp (Esc) för att avsluta loopen/spelet.
-
-//När spelaren/fiender flyttar på sig behöver vi beräkna deras nya position
-//och leta igenom alla vår LevelElements för att se om det finns något annat
-//objekt på den platsen man försöker flytta till.
-//Om det finns en vägg eller annat objekt (fiende/spelaren) på platsen måste
-//förflyttningen avbrytas och den tidigare positionen gälla.
-//Notera dock att om spelaren flyttar sig till en plats där det står en fiende
-//så attackerar han denna (mer om detta längre ner).
-//Detsamma gäller om en fiende flyttar sig till platsen där spelaren står.
-//Fiender kan dock inte attackera varandra i spelet.
+﻿using System.Runtime.CompilerServices;
 
 class GameLoop
 {
@@ -23,36 +8,16 @@ class GameLoop
         Console.Write("Welcome to Jesper's Dungeon Crawler!\nPlease enter your name (max 12 characters): ");
         string playerName = Console.ReadLine();
 
-        if (playerName.Length > 12)
+        if (playerName.Length <= 0 || playerName.Length > 12)
         {
             Console.Clear();
             Start();
         }
 
-        Console.ResetColor();
-        Console.Clear();
-
-        // Display the user control
-        Console.ForegroundColor = ConsoleColor.Yellow;
-        Console.SetCursorPosition(70, 7);
-        Console.WriteLine("Controls:");
-        Console.SetCursorPosition(70, 8);
-        Console.WriteLine("W: Up");
-        Console.SetCursorPosition(70, 9);
-        Console.WriteLine("A: Left");
-        Console.SetCursorPosition(70, 10);
-        Console.WriteLine("S: Down");
-        Console.SetCursorPosition(70, 11);
-        Console.WriteLine("D: Right");
-
-        // Display control how to restart the game
-        Console.SetCursorPosition(70, 13);
-        Console.WriteLine("Esc: Restart game");
-        Console.ResetColor();
+        Console.ResetColor(); Console.Clear();
 
 
         LevelData level = new LevelData();
-
         string filePath = @"Levels\\Level1.txt";
         level.Load(filePath);
         Console.CursorVisible = false;
@@ -62,9 +27,9 @@ class GameLoop
             element.Draw();
         }
 
+        DisplayControls();
         MoveElements(playerName);
     }
-
 
     private static void MoveElements(string playerName)
     {
@@ -83,7 +48,7 @@ class GameLoop
 
             Console.SetCursorPosition(0, 0);
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine($"Name: {myPlayer.Name}     Health: {myPlayer.Health}    Level: {myPlayer.Level}     Turns: {numberOfTurns}".PadRight(Console.BufferWidth));
+            Console.WriteLine($"Name: {myPlayer.Name}     Health: {myPlayer.Health}/{myPlayer.MaxHealth}    Level: {myPlayer.Level}     Turns: {numberOfTurns}".PadRight(Console.BufferWidth));
             Console.ResetColor();
 
             numberOfTurns++;
@@ -189,18 +154,54 @@ class GameLoop
         }
     }
 
+    // Gör skada på den enemy spelaren aktivt går på. Skadan bestäms av playerdamage - enemydefence
     private static void DoPlayerAction(Player myPlayer, Enemy enemy)
     {
-        // Kastar en tärning (1 tärning, 6 sidor (+2 * player level)
         Dice playerAttackDice = new Dice(1, 6, (2 * myPlayer.Level));
         int playerDamage = playerAttackDice.ThrowDice();
 
-        // Minska enemy health med resultatet från tärningskastet och kalla på TakeDamage() i Enemy klasssen
-        enemy.EnemyDealWithDamage(playerDamage, myPlayer);
+        if(enemy.Type == elementType.Rat)
+        {
+            Dice ratDefenceDice = new Dice(1, 3, 0);
+            int ratDefence = ratDefenceDice.ThrowDice();
+            enemy.EnemyDealWithDamage(playerDamage - ratDefence, myPlayer);
+        
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.SetCursorPosition(0, 2);
+            Console.WriteLine($"{myPlayer.Name} attacked {enemy.Name} with: {playerDamage - ratDefence} ({playerAttackDice}) damage. {enemy.Name} defence: {ratDefence} ({ratDefenceDice}) {enemy.Name} has {enemy.Health} health left.".PadRight(Console.BufferWidth));
+            Console.ResetColor();
+        }
+      
+        if (enemy.Type == elementType.Snake)
+        {
+            Dice snakeDefenceDice = new Dice(1, 8, 1);
+            int snakeDefence = snakeDefenceDice.ThrowDice();
+            enemy.EnemyDealWithDamage(playerDamage - snakeDefence, myPlayer);
 
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.SetCursorPosition(0, 2);
-        Console.WriteLine($"{myPlayer.Name} attacked {enemy.Name} with: {playerDamage} ({playerAttackDice}) points of damage. {enemy.Name} has {enemy.Health} health left.".PadRight(Console.BufferWidth));
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.SetCursorPosition(0, 2);
+            Console.WriteLine($"{myPlayer.Name} attacked {enemy.Name} with: {playerDamage - snakeDefence} ({playerAttackDice}) damage. {enemy.Name} defence: {snakeDefence} ({snakeDefenceDice}) {enemy.Name} has {enemy.Health} health left.".PadRight(Console.BufferWidth));
+            Console.ResetColor();
+        }
+    }
+    private static void DisplayControls()
+    {
+        // Display the user control
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.SetCursorPosition(70, 7);
+        Console.WriteLine("Controls:");
+        Console.SetCursorPosition(70, 8);
+        Console.WriteLine("W: Up");
+        Console.SetCursorPosition(70, 9);
+        Console.WriteLine("A: Left");
+        Console.SetCursorPosition(70, 10);
+        Console.WriteLine("S: Down");
+        Console.SetCursorPosition(70, 11);
+        Console.WriteLine("D: Right");
+
+        // Display control how to restart the game
+        Console.SetCursorPosition(70, 13);
+        Console.WriteLine("Esc: Restart game");
         Console.ResetColor();
     }
 }

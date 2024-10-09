@@ -18,6 +18,7 @@ using System.Numerics;
 
 class Player : LevelElement
 {
+    public Dice DefenceDice { get; set; }
     public int MaxHealth { get; set; }
     public int Health { get; set; }
     public int Level { get; set; }
@@ -34,14 +35,18 @@ class Player : LevelElement
         Experience = 0;
     }
 
-    public void PlayerDealWithDamage(int damage)
+    public void PlayerDealWithDamage(int damage, Enemy enemy)
     {
-        Health -= damage;
+        // Reducera Player.Health med den damage som skickas in från enemy om damage >= 0
+        if (damage >= 0)
+        {
+            Health -= damage;
+        }
     }
 
     public void PlayerLevelCheck()
     {
-        if (Level == 1 && Experience >= 30) 
+        if (Level == 1 && Experience >= 20) 
         {
             Level++;
             SetHP();
@@ -50,7 +55,7 @@ class Player : LevelElement
             Console.ResetColor();
         }
 
-        if (Level == 2 && Experience >= 70)
+        if (Level == 2 && Experience >= 60)
         {
             Level++;
             SetHP();
@@ -64,6 +69,7 @@ class Player : LevelElement
     public void SetHP()
     {
         Health = MaxHealth * Level;
+        MaxHealth = Health;
     }
 
 }
