@@ -51,9 +51,9 @@ class GameLoop
             Console.WriteLine($"Name: {myPlayer.Name}     Health: {myPlayer.Health}/{myPlayer.MaxHealth}    Level: {myPlayer.Level}     Turns: {numberOfTurns}".PadRight(Console.BufferWidth));
             Console.ResetColor();
 
-            numberOfTurns++;
             myPlayer.Draw();
             MovePlayer(myPlayer);
+            numberOfTurns++;
 
             // För varje gång MovePlayer har körts - kalla på Update() metoden för samtliga Enemy
             foreach (var element in LevelData.Elements.OfType<Enemy>())

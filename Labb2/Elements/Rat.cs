@@ -51,8 +51,11 @@ class Rat : Enemy
 
             player.PlayerDealWithDamage(ratDamage - playerDefence, this);
 
-            Console.SetCursorPosition(0, 30);
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.SetCursorPosition(0, 2);
             Console.WriteLine($"{this} attacked {player} with {ratDamage - playerDefence} ({ratAttackDice}) damage. {player.Name} defence: {playerDefence} ({playerDefenceDice})".PadRight(Console.BufferWidth));
+            Console.ResetColor();
+
         }
 
         if (IsMoveAllowed(newRatPosition.X, newRatPosition.Y, Elements))

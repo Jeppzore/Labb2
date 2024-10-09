@@ -42,6 +42,19 @@ class Player : LevelElement
         {
             Health -= damage;
         }
+
+        // Slå tillbaka mot den enemy (rat) som attackerade dig 
+        Dice playerAttackDice = new Dice(1, 6, (2 * this.Level));
+        int playerDamage = playerAttackDice.ThrowDice();
+
+        Dice ratDefenceDice = new Dice(1, 3, 0);
+        int ratDefence = ratDefenceDice.ThrowDice();
+        enemy.EnemyDealWithDamage(playerDamage - ratDefence, this);
+
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.SetCursorPosition(0, 3);
+        Console.WriteLine($"{this.Name} attacked {enemy.Name} with: {playerDamage} ({playerAttackDice}) damage. {enemy.Name} has {enemy.Health} health left.".PadRight(Console.BufferWidth));
+        Console.ResetColor();
     }
 
     public void PlayerLevelCheck()
