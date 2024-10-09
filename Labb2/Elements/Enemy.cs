@@ -41,8 +41,9 @@ abstract class Enemy : LevelElement
         Console.ResetColor();
     }
 
-    public void EnemyTakeDamage(int damage, Player player)
+    public void EnemyDealWithDamage(int damage, Player player)
     {
+        // Reducera Enemy.Health med den damage som skickas in från spelaren
         Health -= damage;
 
         if (Health <= 0)
@@ -81,7 +82,7 @@ abstract class Enemy : LevelElement
         {
             Dice ratAttackDice = new Dice(1, 6, 1);
             int ratDamage = ratAttackDice.ThrowDice();
-            player.PlayerTakeDamage(ratDamage);
+            player.PlayerDealWithDamage(ratDamage);
 
             Console.ForegroundColor = ConsoleColor.Red;
             Console.SetCursorPosition(0, 3);
@@ -91,9 +92,9 @@ abstract class Enemy : LevelElement
 
         if (this.Type == elementType.Snake)
         {
-            Dice snakeAttackDice = new Dice(2, 6, 3);
+            Dice snakeAttackDice = new Dice(3, 6, 1);
             int snakeDamage = snakeAttackDice.ThrowDice();
-            player.PlayerTakeDamage(snakeDamage);
+            player.PlayerDealWithDamage(snakeDamage);
 
             Console.ForegroundColor = ConsoleColor.Red;
             Console.SetCursorPosition(0, 3);

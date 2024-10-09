@@ -45,6 +45,7 @@ class GameLoop
         Console.SetCursorPosition(70, 11);
         Console.WriteLine("D: Right");
 
+        // Display control how to restart the game
         Console.SetCursorPosition(70, 13);
         Console.WriteLine("Esc: Restart game");
         Console.ResetColor();
@@ -78,7 +79,7 @@ class GameLoop
         // Loopen som körs så länge spelaren lever
         while (myPlayer.Health > 0)
         {
-            myPlayer.CurrentLevelCheck();
+            myPlayer.PlayerLevelCheck();
 
             Console.SetCursorPosition(0, 0);
             Console.ForegroundColor = ConsoleColor.Yellow;
@@ -99,8 +100,10 @@ class GameLoop
         // Om myPlayer.Health > 0 är spelet över
         Console.Clear();
         Console.SetCursorPosition(0, 0);
-        Console.WriteLine("Game over! Restarting game in 10 seconds...");
-        Thread.Sleep(10000);
+        Console.WriteLine("Game over! Restarting game...");
+        Thread.Sleep(3000);
+        Console.Clear();
+        //Startar om spelet 3 sekunder senare
         Start();
 
     }
@@ -188,11 +191,12 @@ class GameLoop
 
     private static void DoPlayerAction(Player myPlayer, Enemy enemy)
     {
-        Dice playerAttackDice = new Dice(1, 6, 2);
+        // Kastar en tärning (1 tärning, 6 sidor (+2 * player level)
+        Dice playerAttackDice = new Dice(1, 6, (2 * myPlayer.Level));
         int playerDamage = playerAttackDice.ThrowDice();
 
         // Minska enemy health med resultatet från tärningskastet och kalla på TakeDamage() i Enemy klasssen
-        enemy.EnemyTakeDamage(playerDamage, myPlayer);
+        enemy.EnemyDealWithDamage(playerDamage, myPlayer);
 
         Console.ForegroundColor = ConsoleColor.Green;
         Console.SetCursorPosition(0, 2);

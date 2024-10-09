@@ -3,6 +3,9 @@
 // Varken spelare, rats eller snakes kan gå igenom väggar eller varandra.
 
 
+using System.Xml.Linq;
+using System.Xml;
+
 class Rat : Enemy
 {
 
@@ -46,8 +49,18 @@ class Rat : Enemy
                 break;
         }
 
+        LevelElement? playerEncounter = Elements.FirstOrDefault(player => player.Position.X == newRatPosition.X && player.Position.Y == newRatPosition.Y && player is Player);
+        if (playerEncounter is Player player)
+        {
+            Dice ratAttackDice = new Dice(1, 6, 1);
+            int ratDamage = ratAttackDice.ThrowDice();
+            player.PlayerDealWithDamage(ratDamage);
 
-        if (IsMoveAllowed(newRatPosition.X, newRatPosition.Y, Elements))
+            Console.SetCursorPosition(0, 30);
+            Console.WriteLine($"{this} attacked {player} with {ratDamage} ({ratAttackDice}) points of damage".PadRight(Console.BufferWidth));
+        }
+
+            if (IsMoveAllowed(newRatPosition.X, newRatPosition.Y, Elements))
         {
             Position = newRatPosition;
         }

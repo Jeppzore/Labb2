@@ -14,9 +14,11 @@
 //med hjälp av pythagoras sats.
 
 
+using System.Numerics;
+
 class Player : LevelElement
 {
-
+    public int MaxHealth { get; set; }
     public int Health { get; set; }
     public int Level { get; set; }
     public int Experience { get; set; }
@@ -26,35 +28,42 @@ class Player : LevelElement
     public Player(Position position) : base(position, '@', ConsoleColor.Yellow, elementType.Player)
     {
         Health = 100;
+        MaxHealth = Health;
         Name = "Player";
         Level = 1;
         Experience = 0;
     }
 
-    public void PlayerTakeDamage(int damage)
+    public void PlayerDealWithDamage(int damage)
     {
         Health -= damage;
     }
 
-    public void CurrentLevelCheck()
+    public void PlayerLevelCheck()
     {
         if (Level == 1 && Experience >= 30) 
         {
             Level++;
             SetHP();
+            Console.SetCursorPosition(0, 26);
+            Console.WriteLine($"Congratulations! You advanced to level: {this.Level}. You gain full health ({Health})".PadRight(Console.BufferWidth));
+            Console.ResetColor();
         }
 
         if (Level == 2 && Experience >= 70)
         {
             Level++;
             SetHP();
+            Console.SetCursorPosition(0, 26);
+            Console.WriteLine($"Congratulations! You advanced to level: {this.Level}. You gain full health ({Health})".PadRight(Console.BufferWidth));
+            Console.ResetColor();
         }
 
     }
 
     public void SetHP()
     {
-        Health *= Level;
+        Health = MaxHealth * Level;
     }
 
 }

@@ -19,7 +19,6 @@ enum elementType
 abstract class LevelElement
 {
     public Position Position { get; set; }
-
     public elementType Type { get; set; }
     protected char Icon { get; set; }
     protected ConsoleColor CharacterColor { get; set; }
@@ -38,14 +37,12 @@ abstract class LevelElement
         Console.ForegroundColor = CharacterColor;
         Console.WriteLine(Icon);
         Console.ResetColor();
-
     }
 
     public void Clear() // Metod för att ersätta objektets position med ett mellanrum
     {
         Console.SetCursorPosition(Position.X, Position.Y + 5);
         Console.WriteLine(' ');
-
     }
 
 }
