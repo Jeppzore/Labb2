@@ -70,7 +70,6 @@ class Player : LevelElement
                 return true;
             }
 
-
             Console.ForegroundColor = ConsoleColor.Green;
             Console.SetCursorPosition(0, 3);
             Console.WriteLine($"{this.Name} attacked {enemy.Name} with: {playerDamage} ({playerAttackDice}) damage. {enemy.Name} defence: {ratDefence} ({ratDefenceDice}). {enemy.Name} took {playerDamage - ratDefence} damage. ({enemy.Health} health left).".PadRight(Console.BufferWidth));
@@ -81,24 +80,19 @@ class Player : LevelElement
 
     public void PlayerLevelCheck()
     {
-        if (Level == 1 && Experience >= 20) 
+        if ((Level == 1 && Experience >= 20) || (Level == 2 && Experience >= 60))
         {
-            Level++;
-            SetHP();
-            Console.SetCursorPosition(0, 26);
-            Console.WriteLine($"Congratulations! You advanced to level: {this.Level}. You gain full health ({Health}). Attack modifier increased".PadRight(Console.BufferWidth));
-            Console.ResetColor();
+            LevelUp();
         }
+    }
 
-        if (Level == 2 && Experience >= 60)
-        {
-            Level++;
-            SetHP();
-            Console.SetCursorPosition(0, 26);
-            Console.WriteLine($"Congratulations! You advanced to level: {this.Level}. You gain full health ({Health}). Attack modifier increased".PadRight(Console.BufferWidth));
-            Console.ResetColor();
-        }
-
+    private void LevelUp()
+    {
+        Level++;
+        SetHP();
+        Console.SetCursorPosition(0, 26);
+        Console.WriteLine($"Congratulations! You advanced to level: {this.Level}. You gain full health ({Health}). Attack modifier increased".PadRight(Console.BufferWidth));
+        Console.ResetColor();
     }
 
     public void SetHP()

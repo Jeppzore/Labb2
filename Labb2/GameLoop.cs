@@ -2,16 +2,10 @@
 
 class GameLoop
 {
-    private LevelData levelData;
-
-    public GameLoop(LevelData levelData)
-    {
-        this.levelData = levelData;
-    }
-
     public static void Start()
     {
         Console.SetWindowSize(120, 30);
+        
         Console.ForegroundColor = ConsoleColor.Yellow;
         Console.Write("Welcome to Jesper's Dungeon Crawler!\nPlease enter your name (max 8 characters): ");
         string playerName = Console.ReadLine()!;
@@ -153,28 +147,29 @@ class GameLoop
         Dice playerAttackDice = new Dice(1, 6, (2 * myPlayer.Level));
         int playerDamage = playerAttackDice.ThrowDice();
 
-        if(enemy.Type == elementType.Rat)
+        if (enemy.Type == elementType.Rat)
         {
             Dice ratDefenceDice = new Dice(1, 3, 0);
-            int ratDefence = ratDefenceDice.ThrowDice();
-            enemy.DealWithDamage(playerDamage - ratDefence, myPlayer);
-        
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.SetCursorPosition(0, 2);
-            Console.WriteLine($"{myPlayer.Name} attacked {enemy.Name} with: {playerDamage} ({playerAttackDice}) damage. {enemy.Name} defence: {ratDefence} ({ratDefenceDice}) {enemy.Name} took {playerDamage - ratDefence} damage ({enemy.Health} health left).".PadRight(Console.BufferWidth));
+            DealDamageToEnemy(myPlayer, enemy, playerAttackDice, playerDamage, ratDefenceDice);
         }
-      
+
         if (enemy.Type == elementType.Snake)
         {
             Dice snakeDefenceDice = new Dice(1, 8, 1);
-            int snakeDefence = snakeDefenceDice.ThrowDice();
-            enemy.DealWithDamage(playerDamage - snakeDefence, myPlayer);
-
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.SetCursorPosition(0, 2);
-            Console.WriteLine($"{myPlayer.Name} attacked {enemy.Name} with: {playerDamage} ({playerAttackDice}) damage. {enemy.Name} defence: {snakeDefence} ({snakeDefenceDice}) {enemy.Name} took {playerDamage - snakeDefence} damage ({enemy.Health} health left).".PadRight(Console.BufferWidth));
+            DealDamageToEnemy(myPlayer, enemy, playerAttackDice, playerDamage, snakeDefenceDice);
         }
     }
+
+    private static void DealDamageToEnemy(Player myPlayer, Enemy enemy, Dice playerAttackDice, int playerDamage, Dice enemyDefenceDice)
+    {
+        int enemyDefence = enemyDefenceDice.ThrowDice();
+        enemy.DealWithDamage(playerDamage - enemyDefence, myPlayer);
+
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.SetCursorPosition(0, 2);
+        Console.WriteLine($"{myPlayer.Name} attacked {enemy.Name} with: {playerDamage} ({playerAttackDice}) damage. {enemy.Name} defence: {enemyDefence} ({enemyDefenceDice}) {enemy.Name} took {playerDamage - enemyDefence} damage ({enemy.Health} health left).".PadRight(Console.BufferWidth));
+    }
+
     private static void DisplayControls()
     {
         // Display the user control
