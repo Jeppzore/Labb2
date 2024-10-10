@@ -1,7 +1,6 @@
 ﻿
 class Dice
 {
-
     private int numberOfDice;
     private int sidesPerDice;
     private int modifier;
@@ -22,9 +21,9 @@ class Dice
         for (int i = 0; i < numberOfDice; i++)
         {
             diceRoll = random.Next(1, sidesPerDice + 1);
-            totalRoll += diceRoll; // Lägg till resultatet till totalen
+            totalRoll += diceRoll;
         }
-        // Om 2 tärningar kastas blir resultatet värdet av två unika diceRolls + en modifier
+        
         totalRoll += modifier;
         return totalRoll;
     }

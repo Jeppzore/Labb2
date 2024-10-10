@@ -1,10 +1,4 @@
-﻿// Rat förflyttar sig 1 steg i slumpmässig vald riktning
-// (upp, ner, höger eller vänster) varje omgång.
-// Varken spelare, rats eller snakes kan gå igenom väggar eller varandra.
-
-using System;
-using System.Xml.Linq;
-
+﻿
 class Rat : Enemy
 {
     private static Random random = new Random();
@@ -17,20 +11,23 @@ class Rat : Enemy
         Name = "rat";
     }
 
-    public override void Update(List<LevelElement> Elements, Player player) //Rörelsemönstret/ allt som fienden ska göra i varje drag
-    {     
+    public override bool Update(List<LevelElement> Elements, Player player)
+    {
         ClearOldPosition();
-        MoveEnemy(Elements);
+        var isDead = MoveEnemy(Elements);
 
         IsVisible = player.IsWithinVisionRange(this);
         if (IsVisible)
         {      
             DrawNewPosition();
         }
+
+        return isDead;
     }
 
-    public void MoveEnemy(List<LevelElement> Elements)
+    public bool MoveEnemy(List<LevelElement> Elements)
     {
+        var isDead = false;
         int ratMove = random.Next(4);
 
         Position newRatPosition = new Position(this.Position);
@@ -64,17 +61,20 @@ class Rat : Enemy
             int playerDefence = playerDefenceDice.ThrowDice();
 
             HasAttackedFirst = true;
-            player.DealWithRetaliation((ratDamage - playerDefence), this, HasAttackedFirst);
+            isDead = player.DealWithRetaliation((ratDamage - playerDefence), this, HasAttackedFirst);
 
             Console.ForegroundColor = ConsoleColor.Red;
             Console.SetCursorPosition(0, 2);
             Console.WriteLine($"{this} attacked {player.Name} with {ratDamage} ({ratAttackDice}) damage. {player.Name} defence: {playerDefence} ({playerDefenceDice}) {player.Name} took {ratDamage - playerDefence} damage ({player.Health}) health left.".PadRight(Console.BufferWidth));
             Console.ResetColor();
         }
+
         if (IsMoveAllowed(newRatPosition.X, newRatPosition.Y, Elements))
         {
             Position = newRatPosition;
         }
+
+        return isDead;
     }
 
 }

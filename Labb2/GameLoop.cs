@@ -14,7 +14,7 @@ class GameLoop
         Console.SetWindowSize(120, 30);
         Console.ForegroundColor = ConsoleColor.Yellow;
         Console.Write("Welcome to Jesper's Dungeon Crawler!\nPlease enter your name (max 8 characters): ");
-        string playerName = Console.ReadLine();
+        string playerName = Console.ReadLine()!;
 
         if (playerName.Length <= 0 || playerName.Length > 8)
         {
@@ -37,9 +37,7 @@ class GameLoop
     {
         int numberOfTurns = 0;
 
-        // Skapar ny Player med hittat position och Använder LINQ-metod FirstOrDefault
-        // på en lista av LevelElement för att hitta första eller default-matchen av Player
-        Player myPlayer = (Player)LevelData.Elements.FirstOrDefault(x => x.Type == elementType.Player);
+        Player myPlayer = (Player)LevelData.Elements.FirstOrDefault(x => x.Type == elementType.Player)!;
         myPlayer.Name = playerName;
         myPlayer.SetHP();
 
@@ -58,13 +56,21 @@ class GameLoop
             MovePlayer(myPlayer);
             numberOfTurns++;
 
-
-            foreach (var element in LevelData.Elements)
-            {            
-                if (element is Enemy enemy) 
+            var enemies = LevelData.Elements.OfType<Enemy>().ToList();
+            var deadEnemies = new List<Enemy>();
+            foreach (var enemy in enemies)
+            {
+                var isDead = enemy.Update(LevelData.Elements, myPlayer);
+                if (isDead)
                 {
-                    enemy.Update(LevelData.Elements, myPlayer);
-                }                      
+                    deadEnemies.Add(enemy);
+                }
+            }
+
+            foreach (var enemy in deadEnemies)
+            {
+                LevelData.Elements.Remove(enemy);
+                enemy.Clear();
             }
         }
 
@@ -81,103 +87,39 @@ class GameLoop
         var key = Console.ReadKey(true).Key;
         myPlayer.Clear();
 
-        HealthPotion healthPotion = (HealthPotion)LevelData.Elements.FirstOrDefault(x => x.Type == elementType.HealthPotion);
+        HealthPotion? healthPotion = (HealthPotion)LevelData.Elements.FirstOrDefault(x => x.Type == elementType.HealthPotion)!;
 
         switch (key)
         {
             case ConsoleKey.W: // Upp
                 if (myPlayer.Position.Y > 0)
                 {
-                    LevelElement element = LevelData.Elements.FirstOrDefault(elem => elem.Position.X == myPlayer.Position.X && elem.Position.Y == myPlayer.Position.Y - 1);
-
-                    if (element is null)
-                    {
-                        myPlayer.Position = new Position(myPlayer.Position.X, myPlayer.Position.Y - 1);
-                        break;
-                    }
-                    else if (element is Enemy enemy) 
-                    {
-                        DoPlayerAttack(myPlayer, enemy);
-                    }
-                    else if (element is HealthPotion)
-                    {
-                        myPlayer.Position = new Position(myPlayer.Position.X, myPlayer.Position.Y - 1);
-                        myPlayer.RestoreHealth(myPlayer);
-                        healthPotion.Clear(); LevelData.Elements.Remove(healthPotion);
-                        break;
-                    }
+                    LevelElement? element = LevelData.Elements.FirstOrDefault(elem => elem.Position.X == myPlayer.Position.X && elem.Position.Y == myPlayer.Position.Y - 1);
+                    DoMovePlayer(myPlayer, healthPotion, element, new Position (myPlayer.Position.X, myPlayer.Position.Y - 1));
                 }
                 break;
 
             case ConsoleKey.S: // Ner
                 if (myPlayer.Position.Y < 18 - 1)
                 {
-                    LevelElement element = LevelData.Elements.FirstOrDefault(elem => elem.Position.X == myPlayer.Position.X && elem.Position.Y == myPlayer.Position.Y + 1);
-
-                    if (element is null)
-                    {
-                        myPlayer.Position = new Position(myPlayer.Position.X, myPlayer.Position.Y + 1);
-                        break;
-                    }
-                    else if (element is Enemy enemy)
-                    {
-                        DoPlayerAttack(myPlayer, enemy);
-                    }
-                    else if (element is HealthPotion)
-                    {
-                        myPlayer.Position = new Position(myPlayer.Position.X, myPlayer.Position.Y + 1);
-                        myPlayer.RestoreHealth(myPlayer);
-                        healthPotion.Clear(); LevelData.Elements.Remove(healthPotion);
-                        break;
-                    }
+                    LevelElement? element = LevelData.Elements.FirstOrDefault(elem => elem.Position.X == myPlayer.Position.X && elem.Position.Y == myPlayer.Position.Y + 1);                 
+                    DoMovePlayer(myPlayer, healthPotion, element, new Position(myPlayer.Position.X, myPlayer.Position.Y + 1));         
                 }
                 break;
 
             case ConsoleKey.A: // Vänster
                 if (myPlayer.Position.X > 0)
                 {
-                    LevelElement element = LevelData.Elements.FirstOrDefault(elem => elem.Position.X == myPlayer.Position.X - 1 && elem.Position.Y == myPlayer.Position.Y);
-
-                    if (element is null)
-                    {
-                        myPlayer.Position = new Position(myPlayer.Position.X - 1, myPlayer.Position.Y);
-                        break;
-                    }
-                    else if (element is Enemy enemy)
-                    {
-                        DoPlayerAttack(myPlayer, enemy);
-                    }
-                    else if (element is HealthPotion)
-                    {
-                        myPlayer.Position = new Position(myPlayer.Position.X - 1, myPlayer.Position.Y);
-                        myPlayer.RestoreHealth(myPlayer);
-                        healthPotion.Clear(); LevelData.Elements.Remove(healthPotion);
-                        break;
-                    }
+                    LevelElement? element = LevelData.Elements.FirstOrDefault(elem => elem.Position.X == myPlayer.Position.X - 1 && elem.Position.Y == myPlayer.Position.Y);
+                    DoMovePlayer(myPlayer, healthPotion, element, new Position(myPlayer.Position.X - 1, myPlayer.Position.Y));
                 }
                 break;
 
             case ConsoleKey.D: // Höger
                 if (myPlayer.Position.X < 53 - 1)
                 {
-                    LevelElement element = LevelData.Elements.FirstOrDefault(elem => elem.Position.X == myPlayer.Position.X + 1 && elem.Position.Y == myPlayer.Position.Y);
-
-                    if (element is null)
-                    {
-                        myPlayer.Position = new Position(myPlayer.Position.X + 1, myPlayer.Position.Y);
-                        break;
-                    }
-                    else if (element is Enemy enemy)
-                    {
-                        DoPlayerAttack(myPlayer, enemy);
-                    }
-                    else if (element is HealthPotion)
-                    {
-                        myPlayer.Position = new Position(myPlayer.Position.X + 1, myPlayer.Position.Y);
-                        myPlayer.RestoreHealth(myPlayer);
-                        healthPotion.Clear(); LevelData.Elements.Remove(healthPotion);
-                        break;
-                    }
+                    LevelElement? element = LevelData.Elements.FirstOrDefault(elem => elem.Position.X == myPlayer.Position.X + 1 && elem.Position.Y == myPlayer.Position.Y);
+                    DoMovePlayer(myPlayer, healthPotion, element, new Position(myPlayer.Position.X + 1, myPlayer.Position.Y));
                 }
                 break;
 
@@ -185,6 +127,27 @@ class GameLoop
                 Console.Clear();
                 Start();
                 break;
+        }
+    }
+
+    private static void DoMovePlayer(Player myPlayer, HealthPotion? healthPotion, LevelElement? element, Position position)
+    {
+        if (element is null)
+        {
+            myPlayer.Position = new Position(position.X, position.Y);
+            return;
+        }
+        else if (element is Enemy enemy)
+        {
+            DoPlayerAttack(myPlayer, enemy);
+        }
+        else if (element is HealthPotion)
+        {
+            myPlayer.Position = new Position(position.X, position.Y);
+            myPlayer.RestoreHealth(myPlayer);
+            healthPotion!.Clear(); 
+            LevelData.Elements.Remove(healthPotion);
+            return;
         }
     }
 
@@ -219,14 +182,25 @@ class GameLoop
     {
         // Display the user control
         Console.ForegroundColor = ConsoleColor.Yellow;
-        Console.SetCursorPosition(70, 7); Console.WriteLine("Controls:");
-        Console.SetCursorPosition(70, 8); Console.WriteLine("W: Up");
-        Console.SetCursorPosition(70, 9); Console.WriteLine("A: Left");
-        Console.SetCursorPosition(70, 10); Console.WriteLine("S: Down");
-        Console.SetCursorPosition(70, 11); Console.WriteLine("D: Right");
+        Console.SetCursorPosition(70, 7);
+        Console.WriteLine("Controls:");
+
+        Console.SetCursorPosition(70, 8);
+        Console.WriteLine("W: Up");
+
+        Console.SetCursorPosition(70, 9);
+        Console.WriteLine("A: Left");
+
+        Console.SetCursorPosition(70, 10);
+        Console.WriteLine("S: Down");
+
+        Console.SetCursorPosition(70, 11);
+        Console.WriteLine("D: Right");
 
         // Display control how to restart the game
-        Console.SetCursorPosition(70, 13); Console.WriteLine("Esc: Restart game");
+        Console.SetCursorPosition(70, 13);
+        Console.WriteLine("Esc: Restart game");
+
         Console.ResetColor();
     }
 }

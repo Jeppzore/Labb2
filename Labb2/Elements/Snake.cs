@@ -1,7 +1,4 @@
 ﻿
-// Snake kan inte gå igenom väggar eller varandra.
-// Snake står still om spelaren är mer än 2 rutor bort,
-// annars förflyttar den sig bort från spelaren med ett steg i motsatt riktning
 class Snake : Enemy
 {
 
@@ -11,12 +8,12 @@ class Snake : Enemy
         Name = "snake";
     }
 
-    public override void Update(List<LevelElement> Elements, Player p)
+    public override bool Update(List<LevelElement> Elements, Player p)
     {
         ClearOldPosition();
 
 
-        Player player = Elements.OfType<Player>().FirstOrDefault();
+        Player player = Elements.OfType<Player>().FirstOrDefault()!;
         Position newSnakePosition = new Position(this.Position);
         IsVisible = p.IsWithinVisionRange(this);
         if (IsVisible)
@@ -26,7 +23,7 @@ class Snake : Enemy
         }
 
         if (player == null)
-            return; // Om spelaren inte finns, avsluta metoden
+            return false; // Om spelaren inte finns, avsluta metoden
 
         // Beräkna avstånd till spelaren
         int distanceToPlayerX = Math.Abs(player.Position.X - Position.X);
@@ -35,7 +32,7 @@ class Snake : Enemy
         // Om spelaren är mer än 2 rutor bort, stoppa ormen från att röra sig
         if (distanceToPlayerX > 2 || distanceToPlayerY > 2)
         {
-            return;
+            return false;
         }
 
         // Rör omren bort från spelaren i X-led
@@ -63,6 +60,7 @@ class Snake : Enemy
             Position = newSnakePosition;
         }
 
-       //DrawNewPosition();
+        //DrawNewPosition();
+        return false;
     }
 }

@@ -1,25 +1,7 @@
-﻿//Varken spelare, rats eller snakes kan gå igenom väggar eller varandra.
-
-
-// Ärver av LevelElement för att kunna hålla reda på om spelaren
-// krockar med vägg/enemy t.ex.
-
-// För att få en effekt av “utforskande” i spelet begränsar vi spelarens
-// synfält till att bara visa objekt inom en radie av 5 tecken
-// (men ni kan också prova med andra radier);
-// Väggarna försvinner dock aldrig när man väl sett dem,
-// men fienderna syns inte så fort de kommer utanför radien.
-
-//Avståndet mellan två punkter i 2D kan enkelt beräknas
-//med hjälp av pythagoras sats.
-
-
-using System.Numerics;
-using System.Security.Cryptography.X509Certificates;
-
+﻿
 class Player : LevelElement
 {
-    public Dice DefenceDice { get; set; }
+    public Dice? DefenceDice { get; set; }
     public int VisionRange { get; private set; }
     public int MaxHealth { get; set; }
     public int Health { get; set; }
@@ -53,7 +35,7 @@ class Player : LevelElement
         }
     }
 
-    public void DealWithRetaliation(int damage, Enemy enemy, bool hasAttackedFirst)
+    public bool DealWithRetaliation(int damage, Enemy enemy, bool hasAttackedFirst)
     {
         if (damage >= 0)
         {
@@ -73,25 +55,28 @@ class Player : LevelElement
             if (enemy.Health <= 0)
             {
                 enemy.Health = 0;
-            //    Console.SetCursorPosition(0, 24);
-            //    this.Experience += 5;
-            //    Console.ForegroundColor = ConsoleColor.Yellow;
-            //    Console.WriteLine($"You received 5 experience points".PadRight(Console.BufferWidth));
-            //    Console.SetCursorPosition(0, 25);
-            //    Console.WriteLine($"Current experience: {this.Experience}".PadRight(Console.BufferWidth));
-            //    Console.ResetColor();
+                Console.SetCursorPosition(0, 24);
+                this.Experience += 5;
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine($"You received 5 experience points".PadRight(Console.BufferWidth));
+                Console.SetCursorPosition(0, 25);
+                Console.WriteLine($"Current experience: {this.Experience}".PadRight(Console.BufferWidth));
+                Console.ResetColor();
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.SetCursorPosition(0, 3);
+                Console.WriteLine($"{this.Name} attacked {enemy.Name} with: {playerDamage} ({playerAttackDice}) damage. {enemy.Name} defence: {ratDefence} ({ratDefenceDice}). {enemy.Name} took {playerDamage - ratDefence} damage. ({enemy.Health} health left).".PadRight(Console.BufferWidth));
+                Console.ResetColor();
 
-                //LevelData.Elements.Remove(this);
-                //enemy.Clear();
+                return true;
             }
+
 
             Console.ForegroundColor = ConsoleColor.Green;
             Console.SetCursorPosition(0, 3);
             Console.WriteLine($"{this.Name} attacked {enemy.Name} with: {playerDamage} ({playerAttackDice}) damage. {enemy.Name} defence: {ratDefence} ({ratDefenceDice}). {enemy.Name} took {playerDamage - ratDefence} damage. ({enemy.Health} health left).".PadRight(Console.BufferWidth));
             Console.ResetColor();
         }
-
-        hasAttackedFirst = false;
+        return false;
     }
 
     public void PlayerLevelCheck()

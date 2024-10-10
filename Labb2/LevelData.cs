@@ -1,27 +1,22 @@
 ﻿
 class LevelData
 {
-
-    private static List<LevelElement> _elements = new List<LevelElement>(); // Private field elements av typen List<LevelElement>
-    public static List<LevelElement> Elements { get { return _elements; } } //public readonly property “Elements”.
-
-    public Player Player { get; set; }
+    private static List<LevelElement> _elements = new List<LevelElement>();
+    public static List<LevelElement> Elements { get { return _elements; } }
+    public Player? Player { get; set; }
 
     public void Load(string fileName)
     {
         _elements = new List<LevelElement>();
 
         StreamReader sr = new StreamReader(fileName);
+        string line = sr.ReadLine()!;
 
-        //Read the first line of text
-        string line = sr.ReadLine();
-
-        int y = 0; // Spårar radnummer (Y-koordinaten)
+        int y = 0; 
 
         // Läs filen rad för rad
         while (line != null)
         {
-
             for (int x = 0; x < line.Length; x++)
             {
                 if (line[x] == '#') // Wall
@@ -52,22 +47,21 @@ class LevelData
 
             y++;
 
-            //Läs nästa rad
-            line = sr.ReadLine();
+            line = sr.ReadLine()!;
         }  
     }
 
-    public LevelElement GetLevelElementAt(Position position)
-    {
-        foreach (LevelElement element in Elements)
-        {
-            if (element.Position.Equals(position))
-            {
-                return element;
-            }
-        }
-        return null;
-    }
+    //public LevelElement GetLevelElementAt(Position position)
+    //{
+    //    foreach (LevelElement element in Elements)
+    //    {
+    //        if (element.Position.Equals(position))
+    //        {
+    //            return element;
+    //        }
+    //    }
+    //    return null;
+    //}
 
     public void DrawElementsWithinRange(Player player, int visionRange)
     {
