@@ -34,20 +34,10 @@ abstract class LevelElement
         Console.ResetColor();
     }
 
-    public void Clear() // Metod för att ersätta objektets position med ett mellanrum
+    public void Clear()
     {
         Console.SetCursorPosition(Position.X, Position.Y + 5);
         Console.WriteLine(' ');
     }
-
-    //public void Discovered(elementType elementType, Player player) //Rörelsemönstret/ allt som fienden ska göra i varje drag
-    //{
-    //    IsDiscovered = player.IsWithinVisionRange(this);
-    //    if (IsDiscovered)
-    //    {
-            
-    //    }
-    //}
-
 }
 

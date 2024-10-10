@@ -94,32 +94,28 @@ class GameLoop
             case ConsoleKey.W: // Upp
                 if (myPlayer.Position.Y > 0)
                 {
-                    LevelElement? element = LevelData.Elements.FirstOrDefault(elem => elem.Position.X == myPlayer.Position.X && elem.Position.Y == myPlayer.Position.Y - 1);
-                    DoMovePlayer(myPlayer, healthPotion, element, new Position (myPlayer.Position.X, myPlayer.Position.Y - 1));
+                    DoMovePlayer(myPlayer, healthPotion, new Position (myPlayer.Position.X, myPlayer.Position.Y - 1));
                 }
                 break;
 
             case ConsoleKey.S: // Ner
                 if (myPlayer.Position.Y < 18 - 1)
                 {
-                    LevelElement? element = LevelData.Elements.FirstOrDefault(elem => elem.Position.X == myPlayer.Position.X && elem.Position.Y == myPlayer.Position.Y + 1);                 
-                    DoMovePlayer(myPlayer, healthPotion, element, new Position(myPlayer.Position.X, myPlayer.Position.Y + 1));         
+                    DoMovePlayer(myPlayer, healthPotion, new Position(myPlayer.Position.X, myPlayer.Position.Y + 1));         
                 }
                 break;
 
             case ConsoleKey.A: // Vänster
                 if (myPlayer.Position.X > 0)
                 {
-                    LevelElement? element = LevelData.Elements.FirstOrDefault(elem => elem.Position.X == myPlayer.Position.X - 1 && elem.Position.Y == myPlayer.Position.Y);
-                    DoMovePlayer(myPlayer, healthPotion, element, new Position(myPlayer.Position.X - 1, myPlayer.Position.Y));
+                    DoMovePlayer(myPlayer, healthPotion, new Position(myPlayer.Position.X - 1, myPlayer.Position.Y));
                 }
                 break;
 
             case ConsoleKey.D: // Höger
                 if (myPlayer.Position.X < 53 - 1)
                 {
-                    LevelElement? element = LevelData.Elements.FirstOrDefault(elem => elem.Position.X == myPlayer.Position.X + 1 && elem.Position.Y == myPlayer.Position.Y);
-                    DoMovePlayer(myPlayer, healthPotion, element, new Position(myPlayer.Position.X + 1, myPlayer.Position.Y));
+                    DoMovePlayer(myPlayer, healthPotion, new Position(myPlayer.Position.X + 1, myPlayer.Position.Y));
                 }
                 break;
 
@@ -130,8 +126,9 @@ class GameLoop
         }
     }
 
-    private static void DoMovePlayer(Player myPlayer, HealthPotion? healthPotion, LevelElement? element, Position position)
+    private static void DoMovePlayer(Player myPlayer, HealthPotion? healthPotion, Position position)
     {
+        LevelElement? element = LevelData.Elements.FirstOrDefault(elem => elem.Position.X == position.X && elem.Position.Y == position.Y);
         if (element is null)
         {
             myPlayer.Position = new Position(position.X, position.Y);
