@@ -3,8 +3,9 @@ class LevelData
 {
 
     private static List<LevelElement> _elements = new List<LevelElement>(); // Private field elements av typen List<LevelElement>
-
     public static List<LevelElement> Elements { get { return _elements; } } //public readonly property “Elements”.
+
+    public Player Player { get; set; }
 
     public void Load(string fileName)
     {
@@ -23,28 +24,29 @@ class LevelData
 
             for (int x = 0; x < line.Length; x++)
             {
-                if (line[x] == '#') // Kontrollera om tecknet är '#' (Wall)
+                if (line[x] == '#') // Wall
                 {
-                    // Skapa ett nytt LevelElement med objektets motsvarade x och y värde
                     _elements.Add(new Wall(new Position(x, y)));
                 }
 
-                if (line[x] == 'r') // Kontrollera om tecknet är 'r' (Rat)
-                {
-                    // Skapa ett nytt LevelElement med objektets motsvarade x och y värde
+                if (line[x] == 'r') // Rat
+                {          
                     _elements.Add(new Rat(new Position(x, y)));
                 }
 
-                if (line[x] == 's') // Kontrollera om tecknet är 's' (Snake)
+                if (line[x] == 's') // Snake
                 {
-                    // Skapa ett nytt LevelElement med objektets motsvarade x och y värde
                     _elements.Add(new Snake(new Position(x, y)));
                 }
 
-                if (line[x] == '@') // kontrollera om tecknet är '@' (player)
+                if (line[x] == '@') // Player
                 {
-                    // skapa ett nytt levelelement med objektets motsvarade x och y värde
                     _elements.Add(new Player(new Position(x, y)));
+                }
+
+                if (line[x] == '%') // HealthPotion
+                {
+                    _elements.Add(new HealthPotion(new Position(x, y)));
                 }
             }
 
@@ -52,14 +54,11 @@ class LevelData
 
             //Läs nästa rad
             line = sr.ReadLine();
-
-        }
-   
+        }  
     }
 
     public LevelElement GetLevelElementAt(Position position)
     {
-
         foreach (LevelElement element in Elements)
         {
             if (element.Position.Equals(position))
@@ -68,6 +67,19 @@ class LevelData
             }
         }
         return null;
+    }
+
+    public void DrawElementsWithinRange(Player player, int visionRange)
+    {
+        foreach (var element in Elements)
+        {
+            double distance = Math.Sqrt(Math.Pow(player.Position.X - element.Position.X, 2) + Math.Pow(player.Position.Y - element.Position.Y, 2));
+
+            if (distance <= visionRange)
+            {
+                element.Draw();
+            }
+        }
     }
 
 }        

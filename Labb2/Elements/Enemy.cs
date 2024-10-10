@@ -4,8 +4,11 @@
 //Den ska även ha en abstrakt Update-metod, som alltså inte implementeras i denna klass, men som kräver att alla som ärver av klassen implementerar den.
 //Vi vill alltså kunna anropa Update-metoden på alla fiender och sedan sköter de olika subklasserna hur de uppdateras (till exempel olika förflyttningsmönster).
 
+using System;
+
 abstract class Enemy : LevelElement
 {
+    //public bool IsVisible { get; set; }
     public string Name { get; set; }
     public int Health { get; set; } // Property HP
     public Dice AttackDice { get; set; } // Property AttackDice
@@ -13,8 +16,9 @@ abstract class Enemy : LevelElement
 
     protected Enemy(Position position, char icon, ConsoleColor consoleColor, elementType type) : base(position, icon, consoleColor, type)
     {
-
+        IsVisible = false;
     }
+
     protected bool IsMoveAllowed(int newX, int newY, List<LevelElement> elements)
     {
         foreach (var element in elements)
@@ -41,9 +45,8 @@ abstract class Enemy : LevelElement
         Console.ResetColor();
     }
 
-    public void EnemyDealWithDamage(int damage, Player player)
+    public void DealWithDamage(int damage, Player player)
     {
-        // Reducera Enemy.Health med den damage som skickas in från spelaren om damage >= 0
         if (damage >= 0)
         {
             Health -= damage;
@@ -51,7 +54,7 @@ abstract class Enemy : LevelElement
 
         if (Health <= 0)
         {
-            Health = 0; // Ser till att health aldrig blir mindre än 0
+            Health = 0;
 
             if (this.Type == elementType.Rat)
             {
@@ -80,32 +83,35 @@ abstract class Enemy : LevelElement
             return;
         }
 
+        Dice playerDefenceDice = new Dice(1, 6, 0);
+        int playerDefence = playerDefenceDice.ThrowDice();
+
         // Om enemy är vid liv efter att ha tagit skada - gör skada tillbaka på spelaren
         if (this.Type == elementType.Rat)
         {
             Dice ratAttackDice = new Dice(1, 6, 1);
             int ratDamage = ratAttackDice.ThrowDice();
-            player.PlayerDealWithDamage(ratDamage, this);
+
+            player.DealWithDamage(ratDamage - playerDefence, this);
 
             Console.ForegroundColor = ConsoleColor.Red;
             Console.SetCursorPosition(0, 3);
-            Console.WriteLine($"{this.Name} attacked {player.Name} with: {ratDamage} ({ratAttackDice}) damage. {player.Name} has {player.Health} health left.".PadRight(Console.BufferWidth));
+            Console.WriteLine($"{this.Name} attacked {player.Name} with: {ratDamage} ({ratAttackDice}) damage. {player.Name} defence: {playerDefence} ({playerDefenceDice}) {player.Name} took {ratDamage - playerDefence} damage ({player.Health} health left).".PadRight(Console.BufferWidth));
             Console.ResetColor();
         }
-
         if (this.Type == elementType.Snake)
         {
             Dice snakeAttackDice = new Dice(3, 6, 1);
             int snakeDamage = snakeAttackDice.ThrowDice();
-            player.PlayerDealWithDamage(snakeDamage, this);
+            player.DealWithDamage(snakeDamage - playerDefence, this);
 
             Console.ForegroundColor = ConsoleColor.Red;
             Console.SetCursorPosition(0, 3);
-            Console.WriteLine($"{this.Name} attacked {player.Name} with: {snakeDamage} ({snakeAttackDice}) damage. {player.Name} has {player.Health} health left.".PadRight(Console.BufferWidth));
+            Console.WriteLine($"{this.Name} attacked {player.Name} with: {snakeDamage} ({snakeAttackDice}) damage. {player.Name} defence: {playerDefence} ({playerDefenceDice}) {player.Name} took {snakeDamage - playerDefence} damage ({player.Health} health left).".PadRight(Console.BufferWidth));
             Console.ResetColor();
         }
     }
 
-    public abstract void Update(List<LevelElement> elements); // Abstract Update-metod som inte implementeras här men som krävs implementation av alla klasser som ärver av Enemy
+    public abstract void Update(List<LevelElement> elements, Player player); // Abstract Update-metod som inte implementeras här men som krävs implementation av alla klasser som ärver av Enemy
 
 }
