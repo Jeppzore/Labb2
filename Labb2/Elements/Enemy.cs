@@ -2,9 +2,9 @@
 abstract class Enemy : LevelElement
 {
     public string? Name { get; set; }
-    public int? Health { get; set; } // Property HP
-    public Dice? AttackDice { get; set; } // Property AttackDice
-    public Dice? DefenceDice { get; set; } // Property DefenceDice 
+    public int? Health { get; set; }
+    public Dice? AttackDice { get; set; }
+    public Dice? DefenceDice { get; set; }
 
     protected Enemy(Position position, char icon, ConsoleColor consoleColor, elementType type) : base(position, icon, consoleColor, type)
     {
@@ -17,10 +17,10 @@ abstract class Enemy : LevelElement
         {
             if (element.Position.X == newX && element.Position.Y == newY)
             {
-                return false; // kollision med ett objekt
+                return false; // Collides with another element
             }
         }
-        return true; // Ingen kollision, fltyten är giltig
+        return true; // No Collision with another element
     }
 
     protected void ClearOldPosition()
@@ -78,7 +78,7 @@ abstract class Enemy : LevelElement
         Dice playerDefenceDice = new Dice(1, 6, 0);
         int playerDefence = playerDefenceDice.ThrowDice();
 
-        // If enemy is alive after taking damage from player, deal damage back to the player
+        // If enemy Rat alive after taking damage from player, deal damage back to the player
         if (this.Type == elementType.Rat)
         {
             Dice ratAttackDice = new Dice(1, 6, 1);
@@ -90,6 +90,8 @@ abstract class Enemy : LevelElement
             Console.WriteLine($"{this.Name} attacked {player.Name} with: {ratDamage} ({ratAttackDice}) damage. {player.Name} defence: {playerDefence} ({playerDefenceDice}) {player.Name} took {ratDamage - playerDefence} damage ({player.Health} health left).".PadRight(Console.BufferWidth));
             Console.ResetColor();
         }
+
+        // If enemy Snake alive after taking damage from player, deal damage back to the player
         if (this.Type == elementType.Snake)
         {
             Dice snakeAttackDice = new Dice(3, 6, 1);

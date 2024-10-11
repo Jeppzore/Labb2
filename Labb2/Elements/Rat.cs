@@ -2,7 +2,6 @@
 class Rat : Enemy
 {
     private static Random random = new Random();
-
     public bool HasAttackedFirst { get; set; }
 
     public Rat(Position position) : base(position, 'r', ConsoleColor.Red, elementType.Rat)
@@ -34,24 +33,25 @@ class Rat : Enemy
 
         switch (ratMove)
         {
-            case 0: // Vänster
+            case 0: // Left
                 newRatPosition.X = newRatPosition.X - 1;
                 break;
 
-            case 1: // Höger
+            case 1: // Right
                 newRatPosition.X = newRatPosition.X + 1;
                 break;
 
-            case 2: // Upp
+            case 2: // Up
                 newRatPosition.Y = newRatPosition.Y - 1;
                 break;
 
-            case 3: // Ner
+            case 3: // Down
                 newRatPosition.Y = newRatPosition.Y + 1;
                 break;
         }
 
         LevelElement? playerEncounter = Elements.FirstOrDefault(player => player.Position.X == newRatPosition.X && player.Position.Y == newRatPosition.Y && player is Player);
+
         if (playerEncounter is Player player)
         {
             Dice ratAttackDice = new Dice(1, 6, 1);

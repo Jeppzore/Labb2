@@ -14,7 +14,6 @@ class LevelData
 
         int y = 0; 
 
-        // Läs filen rad för rad
         while (line != null)
         {
             for (int x = 0; x < line.Length; x++)
@@ -50,18 +49,6 @@ class LevelData
             line = sr.ReadLine()!;
         }  
     }
-
-    //public LevelElement GetLevelElementAt(Position position)
-    //{
-    //    foreach (LevelElement element in Elements)
-    //    {
-    //        if (element.Position.Equals(position))
-    //        {
-    //            return element;
-    //        }
-    //    }
-    //    return null;
-    //}
 
     public void DrawElementsWithinRange(Player player, int visionRange)
     {

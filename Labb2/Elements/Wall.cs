@@ -1,10 +1,8 @@
 ﻿
-class Wall : LevelElement // Ärver från LevelElements (abstract)
+class Wall : LevelElement
 {
-
     public Wall(Position position) : base(position, '#', ConsoleColor.White, elementType.Wall)
     {
 
     }
-
 }

@@ -1,7 +1,6 @@
 ﻿
 class Snake : Enemy
 {
-
     public Snake(Position position) : base(position, 's', ConsoleColor.Green, elementType.Snake)
     {
         Health = 20;
@@ -12,9 +11,10 @@ class Snake : Enemy
     {
         ClearOldPosition();
 
-
         Player player = Elements.OfType<Player>().FirstOrDefault()!;
+
         Position newSnakePosition = new Position(this.Position);
+
         IsVisible = p.IsWithinVisionRange(this);
         if (IsVisible)
         {
@@ -23,34 +23,32 @@ class Snake : Enemy
         }
 
         if (player == null)
-            return false; // Om spelaren inte finns, avsluta metoden
+            return false;
 
-        // Beräkna avstånd till spelaren
         int distanceToPlayerX = Math.Abs(player.Position.X - Position.X);
         int distanceToPlayerY = Math.Abs(player.Position.Y - Position.Y);
 
-        // Om spelaren är mer än 2 rutor bort, stoppa ormen från att röra sig
         if (distanceToPlayerX > 2 || distanceToPlayerY > 2)
         {
             return false;
         }
 
-        // Rör omren bort från spelaren i X-led
+        // Move Snake away from player X
         if (player.Position.X < Position.X)
         {
-            newSnakePosition.X = Position.X + 1; 
+            newSnakePosition.X = Position.X + 1;
         }
         else if (player.Position.X > Position.X)
         {
             newSnakePosition.X = Position.X - 1;
         }
 
-        // Rör omren bort från spelaren i Y-led
+        // Move Snake away from player Y
         if (player.Position.Y < Position.Y)
         {
-            newSnakePosition.Y = Position.Y + 1; 
+            newSnakePosition.Y = Position.Y + 1;
         }
-        else if (player.Position.Y > Position.Y) 
+        else if (player.Position.Y > Position.Y)
         {
             newSnakePosition.Y = Position.Y - 1;
         }
@@ -60,7 +58,6 @@ class Snake : Enemy
             Position = newSnakePosition;
         }
 
-        //DrawNewPosition();
         return false;
     }
 }
