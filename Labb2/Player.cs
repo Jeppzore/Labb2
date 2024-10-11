@@ -91,6 +91,7 @@ class Player : LevelElement
         Level++;
         SetHP();
         Console.SetCursorPosition(0, 26);
+        Console.ForegroundColor= ConsoleColor.White;
         Console.WriteLine($"Congratulations! You advanced to level: {this.Level}. You gain full health ({Health}). Attack modifier increased".PadRight(Console.BufferWidth));
         Console.ResetColor();
     }

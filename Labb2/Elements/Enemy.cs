@@ -78,12 +78,11 @@ abstract class Enemy : LevelElement
         Dice playerDefenceDice = new Dice(1, 6, 0);
         int playerDefence = playerDefenceDice.ThrowDice();
 
-        // Om enemy är vid liv efter att ha tagit skada - gör skada tillbaka på spelaren
+        // If enemy is alive after taking damage from player, deal damage back to the player
         if (this.Type == elementType.Rat)
         {
             Dice ratAttackDice = new Dice(1, 6, 1);
-            int ratDamage = ratAttackDice.ThrowDice();
-
+            int ratDamage = ratAttackDice.ThrowDice();        
             player.DealWithDamage(ratDamage - playerDefence, this);
 
             Console.ForegroundColor = ConsoleColor.Red;

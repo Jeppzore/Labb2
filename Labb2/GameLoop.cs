@@ -1,11 +1,9 @@
-﻿using System.Runtime.CompilerServices;
-
-class GameLoop
+﻿class GameLoop
 {
     public static void Start()
     {
         Console.SetWindowSize(120, 30);
-        
+
         Console.ForegroundColor = ConsoleColor.Yellow;
         Console.Write("Welcome to Jesper's Dungeon Crawler!\nPlease enter your name (max 8 characters): ");
         string playerName = Console.ReadLine()!;
@@ -39,6 +37,7 @@ class GameLoop
         while (myPlayer.Health > 0)
         {
             myPlayer.PlayerLevelCheck();
+            CheckWinCondition(myPlayer);
 
             Console.SetCursorPosition(0, 0);
             Console.ForegroundColor = ConsoleColor.Yellow;
@@ -88,14 +87,14 @@ class GameLoop
             case ConsoleKey.W: // Upp
                 if (myPlayer.Position.Y > 0)
                 {
-                    DoMovePlayer(myPlayer, healthPotion, new Position (myPlayer.Position.X, myPlayer.Position.Y - 1));
+                    DoMovePlayer(myPlayer, healthPotion, new Position(myPlayer.Position.X, myPlayer.Position.Y - 1));
                 }
                 break;
 
             case ConsoleKey.S: // Ner
                 if (myPlayer.Position.Y < 18 - 1)
                 {
-                    DoMovePlayer(myPlayer, healthPotion, new Position(myPlayer.Position.X, myPlayer.Position.Y + 1));         
+                    DoMovePlayer(myPlayer, healthPotion, new Position(myPlayer.Position.X, myPlayer.Position.Y + 1));
                 }
                 break;
 
@@ -136,7 +135,7 @@ class GameLoop
         {
             myPlayer.Position = new Position(position.X, position.Y);
             myPlayer.RestoreHealth(myPlayer);
-            healthPotion!.Clear(); 
+            healthPotion!.Clear();
             LevelData.Elements.Remove(healthPotion);
             return;
         }
@@ -168,6 +167,22 @@ class GameLoop
         Console.ForegroundColor = ConsoleColor.Green;
         Console.SetCursorPosition(0, 2);
         Console.WriteLine($"{myPlayer.Name} attacked {enemy.Name} with: {playerDamage} ({playerAttackDice}) damage. {enemy.Name} defence: {enemyDefence} ({enemyDefenceDice}) {enemy.Name} took {playerDamage - enemyDefence} damage ({enemy.Health} health left).".PadRight(Console.BufferWidth));
+    }
+
+    public static void CheckWinCondition(Player myPlayer)
+    {
+        if (myPlayer.Experience >= 145)
+        {
+            Console.Clear();
+            Console.ForegroundColor= ConsoleColor.Green;
+            Console.WriteLine("Y O U  W I N!");
+            Thread.Sleep(2000);
+            Console.WriteLine("Restarting game...");
+            Thread.Sleep(3000);
+            Console.ResetColor();
+            Console.Clear();
+            Start();
+        }
     }
 
     private static void DisplayControls()
