@@ -3,9 +3,9 @@
     public static void Start()
     {
         Console.SetWindowSize(120, 30);
-
         Console.ForegroundColor = ConsoleColor.Yellow;
         Console.Write("Welcome to Jesper's Dungeon Crawler!\nPlease enter your name (max 8 characters): ");
+
         string playerName = Console.ReadLine()!;
 
         if (playerName.Length <= 0 || playerName.Length > 8)
@@ -15,11 +15,11 @@
         }
 
         Console.ResetColor(); Console.Clear();
+        Console.CursorVisible = false;
 
         LevelData level = new LevelData();
         string filePath = @"Levels\\Level1.txt";
         level.Load(filePath);
-        Console.CursorVisible = false;
 
         DisplayControls();
         MoveElements(playerName, level);
@@ -33,7 +33,7 @@
         myPlayer.Name = playerName;
         myPlayer.SetHP();
 
-        // Loopen som körs så länge spelaren lever
+        // Main Game loop
         while (myPlayer.Health > 0)
         {
             myPlayer.PlayerLevelCheck();
@@ -47,10 +47,12 @@
             myPlayer.Draw();
             levelData.DrawElementsWithinRange(myPlayer, myPlayer.VisionRange);
             MovePlayer(myPlayer);
+
             numberOfTurns++;
 
             var enemies = LevelData.Elements.OfType<Enemy>().ToList();
             var deadEnemies = new List<Enemy>();
+
             foreach (var enemy in enemies)
             {
                 var isDead = enemy.Update(LevelData.Elements, myPlayer);
@@ -78,34 +80,35 @@
     private static void MovePlayer(Player myPlayer)
     {
         var key = Console.ReadKey(true).Key;
+
         myPlayer.Clear();
 
         HealthPotion? healthPotion = (HealthPotion)LevelData.Elements.FirstOrDefault(x => x.Type == elementType.HealthPotion)!;
 
         switch (key)
         {
-            case ConsoleKey.W: // Upp
+            case ConsoleKey.W: // Up
                 if (myPlayer.Position.Y > 0)
                 {
                     DoMovePlayer(myPlayer, healthPotion, new Position(myPlayer.Position.X, myPlayer.Position.Y - 1));
                 }
                 break;
 
-            case ConsoleKey.S: // Ner
+            case ConsoleKey.S: // Down
                 if (myPlayer.Position.Y < 18 - 1)
                 {
                     DoMovePlayer(myPlayer, healthPotion, new Position(myPlayer.Position.X, myPlayer.Position.Y + 1));
                 }
                 break;
 
-            case ConsoleKey.A: // Vänster
+            case ConsoleKey.A: // Left
                 if (myPlayer.Position.X > 0)
                 {
                     DoMovePlayer(myPlayer, healthPotion, new Position(myPlayer.Position.X - 1, myPlayer.Position.Y));
                 }
                 break;
 
-            case ConsoleKey.D: // Höger
+            case ConsoleKey.D: // Right
                 if (myPlayer.Position.X < 53 - 1)
                 {
                     DoMovePlayer(myPlayer, healthPotion, new Position(myPlayer.Position.X + 1, myPlayer.Position.Y));
@@ -122,15 +125,18 @@
     private static void DoMovePlayer(Player myPlayer, HealthPotion? healthPotion, Position position)
     {
         LevelElement? element = LevelData.Elements.FirstOrDefault(elem => elem.Position.X == position.X && elem.Position.Y == position.Y);
+
         if (element is null)
         {
             myPlayer.Position = new Position(position.X, position.Y);
             return;
         }
+
         else if (element is Enemy enemy)
         {
             DoPlayerAttack(myPlayer, enemy);
         }
+
         else if (element is HealthPotion)
         {
             myPlayer.Position = new Position(position.X, position.Y);
@@ -174,11 +180,14 @@
         if (myPlayer.Experience >= 145)
         {
             Console.Clear();
-            Console.ForegroundColor= ConsoleColor.Green;
+            Console.ForegroundColor = ConsoleColor.Green;
+
             Console.WriteLine("Y O U  W I N!");
             Thread.Sleep(2000);
+
             Console.WriteLine("Restarting game...");
             Thread.Sleep(3000);
+
             Console.ResetColor();
             Console.Clear();
             Start();
@@ -204,7 +213,6 @@
         Console.SetCursorPosition(70, 11);
         Console.WriteLine("D: Right");
 
-        // Display control how to restart the game
         Console.SetCursorPosition(70, 13);
         Console.WriteLine("Esc: Restart game");
 

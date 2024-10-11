@@ -7,7 +7,6 @@ enum elementType
     Snake,
     HealthPotion,
 }
-
 abstract class LevelElement
 {
     public bool IsVisible { get; set; }
